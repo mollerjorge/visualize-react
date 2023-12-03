@@ -1,5 +1,7 @@
 import Button from "./Button";
 
+import mixpanel from "mixpanel-browser";
+
 import pricingComments from "../images/pricing-commets.webp";
 import silverMedal from "../images/silver_medal.webp";
 import glassTrophy from "../images/glass_trophy.webp";

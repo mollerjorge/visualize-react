@@ -18,6 +18,7 @@ export default function Why() {
           <img
             src={profileImageUrl}
             className="rounded-full w-32 mb-20 mx-auto"
+            alt="george moller profile"
           />
           <p className="mb-8">
             Hey, I'm George. I've been a software engineer for over a decade and
