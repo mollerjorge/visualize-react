@@ -11,14 +11,17 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
+    "@react-spring/web": "^9.7.3",
     "@remix-run/css-bundle": "^2.2.0",
     "@remix-run/node": "^2.2.0",
     "@remix-run/react": "^2.2.0",
     "@remix-run/serve": "^2.2.0",
     "clsx": "^2.0.0",
     "isbot": "^3.6.8",
+    "mixpanel-browser": "^2.48.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "yet-another-react-lightbox": "^3.15.2"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.2.0",

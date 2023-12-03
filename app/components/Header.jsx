@@ -1,20 +1,12 @@
 import { Fragment } from "react";
-import { Link, NavLink } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { Popover, Transition } from "@headlessui/react";
 import clsx from "clsx";
+import mixpanel from "mixpanel-browser";
 
 import logo from "../images/logo.png";
 import { Container } from "./Container";
 import Button from "./Button";
-// import { NavLink } from '@/components/NavLink'
-
-function MobileNavLink({ href, children }) {
-  return (
-    <Popover.Button href={href} className="block w-full p-2">
-      {children}
-    </Popover.Button>
-  );
-}
 
 function MobileNavIcon({ open }) {
   return (
@@ -62,7 +54,7 @@ function MobileNavigation() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Popover.Overlay className="fixed inset-0 bg-slate-300/50" />
+          <Popover.Overlay className="fixed inset-0" />
         </Transition.Child>
         <Transition.Child
           as={Fragment}
@@ -75,13 +67,32 @@ function MobileNavigation() {
         >
           <Popover.Panel
             as="div"
-            className="absolute inset-x-0 top-full mt-4 flex origin-top flex-col rounded-2xl bg-white p-4 text-lg tracking-tight text-slate-900 shadow-xl ring-1 ring-slate-900/5"
+            className="absolute inset-x-0 top-full mt-4 flex origin-top flex-col rounded-2xl bg-slate-800 p-4 text-lg tracking-tight text-white shadow-xl ring-1 ring-slate-900/5"
           >
-            <MobileNavLink href="#features">Features</MobileNavLink>
-            <MobileNavLink href="#testimonials">Testimonials</MobileNavLink>
-            <MobileNavLink href="#pricing">Pricing</MobileNavLink>
-            <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/login">Sign in</MobileNavLink>
+            <Link className="hover:text-white text-center mb-2" to="#overview">
+              Overview
+            </Link>
+            <Link
+              className="hover:text-white text-center mb-2"
+              to="#what-is-inside"
+              onClick={() => {
+                console.log("hey");
+                mixpanel.track("Click", {
+                  navbar: "What is inside",
+                });
+              }}
+            >
+              What's inside?
+            </Link>
+            <Link
+              className="hover:text-white text-center mb-2"
+              to="#testimonials"
+            >
+              Testimonials
+            </Link>
+            <Link className="hover:text-white text-center mb-2" to="#pricing">
+              Pricing
+            </Link>
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -91,7 +102,10 @@ function MobileNavigation() {
 
 export function Header() {
   return (
-    <header className="py-10 text-white">
+    <header
+      className="py-5 text-white sticky top-0 bg-body-1 z-50 bg-opacity-60 "
+      style={{ backdropFilter: "blur(5px)" }}
+    >
       <Container>
         <nav className="relative z-50 flex items-center justify-between">
           <Link href="#" aria-label="Home">
@@ -99,23 +113,65 @@ export function Header() {
           </Link>
 
           <div className="hidden text-slate-300 xl:flex md:gap-10 text-lg font-semibold xl:ml-40 ">
-            <NavLink className="hover:text-white" href="#overview">
+            <Link
+              onClick={() => {
+                mixpanel.track("Click", {
+                  navbar: "Overview",
+                });
+              }}
+              className="hover:text-white"
+              to="#overview"
+            >
               Overview
-            </NavLink>
-            <NavLink className="hover:text-white" href="#what-is-inside">
+            </Link>
+            <Link
+              onClick={() => {
+                mixpanel.track("Click", {
+                  navbar: "What is inside",
+                });
+              }}
+              className="hover:text-white"
+              to="#what-is-inside"
+            >
               What's inside?
-            </NavLink>
-            <NavLink className="hover:text-white" href="#testimonials">
+            </Link>
+            <Link
+              onClick={() => {
+                mixpanel.track("Click", {
+                  navbar: "Testimonials",
+                });
+              }}
+              className="hover:text-white"
+              to="#testimonials"
+            >
               Testimonials
-            </NavLink>
-            <NavLink className="hover:text-white" href="#pricing">
+            </Link>
+            <Link
+              onClick={() => {
+                mixpanel.track("Click", {
+                  navbar: "Pricing",
+                });
+              }}
+              className="hover:text-white"
+              to="#pricing"
+            >
               Pricing
-            </NavLink>
+            </Link>
           </div>
 
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
-              <Button primary>Get it now</Button>
+              <Button
+                onClick={() => {
+                  mixpanel.track("Click", {
+                    "Get it now": "navbar",
+                  });
+                }}
+                to="#pricing"
+                primary
+              >
+                Get it now
+              </Button>
             </div>
             <MobileNavigation />
           </div>

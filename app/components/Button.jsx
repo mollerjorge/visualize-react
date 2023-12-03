@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { Link } from "@remix-run/react";
 
 const sparkles = (
   <svg
@@ -17,13 +17,17 @@ const sparkles = (
   </svg>
 );
 
-export default function Button({ children, primary }) {
-  const className = "bg-purple-1 rounded-full hover:-translate-y-1 transform transition-all text-lg font-bold px-8 flex items-center gap-2 py-4";
+export default function Button({ children, primary, full, to, onClick }) {
+  let className =
+    "bg-purple-1 rounded-full hover:-translate-y-1 cursor-pointer transform transition-all text-lg font-bold px-8 flex items-center gap-2 py-4";
 
+  if (full) {
+    className += " w-full justify-center";
+  }
   return (
-    <button className={className}>
+    <Link onClick={onClick} to={to} className={className}>
       {primary && sparkles}
       {children}
-    </button>
+    </Link>
   );
 }
