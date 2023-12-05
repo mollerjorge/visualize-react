@@ -111,8 +111,8 @@ export function Hero() {
                 <path
                   d="M5.22039 69.2556C7.89051 93.3575 55.6278 107.895 121.832 100.561C188.036 93.2264 239.54 67.7422 236.87 43.6403C234.2 19.5384 178.367 5.94568 112.163 13.2801C95.5084 15.1251 79.7844 18.1186 65.6191 21.9498"
                   stroke="url(#paint0_linear_1784_83)"
-                  stroke-width="2"
-                  stroke-linecap="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                 />
                 <circle cx="117.5" cy="12.399" r="5.5" fill="#8D64BC" />
                 <defs>
@@ -124,8 +124,8 @@ export function Hero() {
                     y2="104.387"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop stop-color="#C084FC" />
-                    <stop offset="1" stop-color="#C084FC" stop-opacity="0" />
+                    <stop stopColor="#C084FC" />
+                    <stop offset="1" stopColor="#C084FC" stopOpacity="0" />
                   </linearGradient>
                 </defs>
               </svg>

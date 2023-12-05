@@ -20,7 +20,7 @@ const Card = ({ text, description, icon, alt, className }) => {
         className={clsx("lg:absolute -top-20 -left-0", className)}
       />
       <h3 className=" text-[28px] font-bold leading-tight mb-5">{text}</h3>
-      <p className="text-lg font-medium">{description}</p>
+      {description}
     </li>
   );
 };
@@ -82,7 +82,8 @@ export default function TheProblem() {
                 <span>1. </span>How to structure a React application?
               </li>
               <li>
-                <span>2. </span>How to optimize components and avoid unneccesary renders?
+                <span>2. </span>How to optimize components and avoid unneccesary
+                renders?
               </li>
               <li>
                 <span>3. </span>How and when to abstract your UI into
@@ -93,7 +94,8 @@ export default function TheProblem() {
                 spearation of concerns to keep the business logic decoupled?
               </li>
               <li>
-                <span>5. </span>How to apply engineering design patterns? (yes you can do this)
+                <span>5. </span>How to apply engineering design patterns? (yes
+                you can do this)
               </li>
             </ul>
             <p className="mb-8">
@@ -101,12 +103,18 @@ export default function TheProblem() {
               asking in the past.
             </p>
             <p className="mb-8">
-              I created <span className="text-purple-400 font-bold">107 beautifully designed infographics</span>, to explain
-              these concepts (and more) in an easy-to-understand, visually
-              appealing format.
+              I created{" "}
+              <span className="text-purple-400 font-bold">
+                107 beautifully designed infographics
+              </span>
+              , to explain these concepts (and more) in an easy-to-understand,
+              visually appealing format.
             </p>
             <p className="mb-8">
-              Complementing these infographics are <span className="text-purple-400 font-bold">77 dynamic video tutorials. </span>
+              Complementing these infographics are{" "}
+              <span className="text-purple-400 font-bold">
+                77 dynamic video tutorials.{" "}
+              </span>
               Each tutorial is crafted to guide you through practical,
               real-world scenarios in React development.
             </p>
@@ -120,9 +128,13 @@ export default function TheProblem() {
             text="Dive deep into professional secrets"
             description={
               <>
-                <p className="mb-8">
-                  Go beyond basic tutorials. The infographics and videos unveil key
-                  concepts and insider tips used by top React JS professionals.{" "}
+                <p className="text-lg font-medium mb-8">
+                  Go beyond basic tutorials.
+                </p>
+                <p className="text-lg font-medium mb-8">
+                  {" "}
+                  The infographics and videos unveil key concepts and insider
+                  tips used by top React JS professionals.
                 </p>
               </>
             }
@@ -138,8 +150,7 @@ export default function TheProblem() {
                   It’s not just about learning; it’s about earning.
                 </p>
                 <p className="mb-8">
-                  You will boost your potential
-                  to earn more.{" "}
+                  You will boost your potential to earn more.{" "}
                 </p>
                 <p className="mb-8">
                   Stand out in job interviews, negotiate higher salaries, and
@@ -155,10 +166,9 @@ export default function TheProblem() {
             text="Skyrocket your performance"
             description={
               <>
-
                 <p className="mb-8">
-                  Dive straight into high-impact strategies that
-                  enhance the performance of your React applications.{" "}
+                  Dive straight into high-impact strategies that enhance the
+                  performance of your React applications.{" "}
                 </p>
 
                 <p className="mb-8">

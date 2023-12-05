@@ -22,9 +22,8 @@ const TestimonialCard = ({ text, name, photoUrl, occupation }) => {
             <img src={star} alt="star icon" className="w-28" />
           </div>
         </div>
-        <p className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-          {text}
-        </p>
+
+        {text}
       </div>
     </div>
   );

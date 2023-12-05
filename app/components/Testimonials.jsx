@@ -23,7 +23,7 @@ const testimonials = [
     name: "Kate",
     occupation: "Frontend Developer",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
           How to structure and organize a React application was always a
           struggle for me.
@@ -32,7 +32,7 @@ const testimonials = [
           George explains a nice and easy path to follow to achieve a
           maintainable app structure, and now it makes compelte sense!
         </p>
-      </>
+      </div>
     ),
     photoUrl: testimonial2,
   },
@@ -40,12 +40,12 @@ const testimonials = [
     name: "Pratham",
     occupation: "Software Engineer and Developer Relations at HyperspaceAI",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
           I like how easily you explain things using only infographics.
         </p>
         <p> Quality content 🔥</p>
-      </>
+      </div>
     ),
     photoUrl: testimonial5,
   },
@@ -53,10 +53,10 @@ const testimonials = [
     name: "Lucas",
     occupation: "Frontend Engineer",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">It’s so pleasing to read your infographics.</p>
         <p> Clear and straightforward and the content is awesome.</p>
-      </>
+      </div>
     ),
     photoUrl: testimonial3,
   },
@@ -64,7 +64,7 @@ const testimonials = [
     name: "Soham",
     occupation: "Full stack web developer",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
           Thank you for sharing this valuable resource, George!
         </p>
@@ -74,7 +74,7 @@ const testimonials = [
           knowledge.
         </p>
         <p>Can't wait to download and start learning!</p>
-      </>
+      </div>
     ),
     photoUrl: testimonial7,
   },
@@ -82,7 +82,7 @@ const testimonials = [
     name: "Sophie",
     occupation: "Software Engineer",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
           The visual presentation of concepts is top-notch, specially the ones
           related to useEffect.
@@ -92,7 +92,7 @@ const testimonials = [
           confident with React.
         </p>
         <p>Thanks George!</p>
-      </>
+      </div>
     ),
     photoUrl: testimonial6,
   },
@@ -100,7 +100,7 @@ const testimonials = [
     name: "Pete",
     occupation: "Web developer at Pixels",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
           I never undestood how and when to use useEffect in React
         </p>
@@ -108,7 +108,7 @@ const testimonials = [
           After reading these infographics, I'll have to refactor some old cold
           😅.
         </p>
-      </>
+      </div>
     ),
     photoUrl: testimonial4,
   },
@@ -116,7 +116,7 @@ const testimonials = [
     name: "Mike",
     occupation: "Software Engineer at Hubspot",
     text: (
-      <>
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
           I want to take the time to thank you again. The infographics and
           videos are helping tremendously.
@@ -129,7 +129,7 @@ const testimonials = [
           So far your teaching style is most suitable for my ADHD. Much
           appreciated
         </p>
-      </>
+      </div>
     ),
     photoUrl: testimonial8,
   },
