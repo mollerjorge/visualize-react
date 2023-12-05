@@ -38,7 +38,7 @@ export default function App() {
 
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701652135/Frame_87_2_px9eki.png"
+          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701781168/Frame_87_4_jxewwr.png"
         />
 
         <meta property="twitter:card" content="summary_large_image" />
@@ -53,7 +53,7 @@ export default function App() {
         />
         <meta
           property="twitter:image"
-          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701652135/Frame_87_2_px9eki.png"
+          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701781168/Frame_87_4_jxewwr.png"
         />
         <Meta />
         <Links />
