@@ -8,6 +8,7 @@ import Button from "./Button";
 import stars from "../images/stars.png";
 import star1 from "../images/star-1.svg";
 import star2 from "../images/star-2.svg";
+import subs from "../subtitles/subs_en.vtt";
 
 export function Hero() {
   const styles = useSpring({
@@ -167,7 +168,9 @@ export function Hero() {
                 src="https://res.cloudinary.com/dptgkdbjg/video/upload/v1701553940/Main_4_qjplan.mp4"
                 controls
                 muted
-              ></video>
+              >
+                <track src={subs} kind="captions" srcLang="en" label="english_captions" />
+              </video>
             </div>
           </div>
         </div>

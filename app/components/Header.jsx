@@ -4,7 +4,7 @@ import { Popover, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import mixpanel from "mixpanel-browser";
 
-import logo from "../images/logo.png";
+import logo from "../images/logo.webp";
 import { Container } from "./Container";
 import Button from "./Button";
 

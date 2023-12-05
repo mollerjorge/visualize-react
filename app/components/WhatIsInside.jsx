@@ -210,11 +210,11 @@ export default function WhatIsInside() {
           </p>
         </div>
         <div className="mx-10">
+          <div
+            className="top-[400px] absolute z-10 w-full"
+            ref={whatIsInsideref}
+          />
           <ul className="grid grid-cols-1 relative md:grid-cols-2 gap-x-20 gap-y-16 mt-20">
-            <div
-              className="top-[400px] absolute z-10 w-full"
-              ref={whatIsInsideref}
-            />
             {trail.map((style, index) => {
               const video = videos[index];
               return (
@@ -240,7 +240,9 @@ export default function WhatIsInside() {
             })}
           </ul>
 
-          <p className="text-center text-2xl font-medium mt-20 italic">...71 more videos</p>
+          <p className="text-center text-2xl font-medium mt-20 italic">
+            ...71 more videos
+          </p>
         </div>
 
         <Lightbox
@@ -267,9 +269,9 @@ export default function WhatIsInside() {
           </p>
         </div>
 
-        <div className="mx-10">
+        <div className="mx-10 relative">
+          <div className="top-[300px] absolute z-10 w-full" ref={infosRef} />
           <ul className="grid grid-cols-1 relative md:grid-cols-2 gap-x-20 gap-y-16 mt-20">
-            <div className="top-[300px] absolute z-10 w-full" ref={infosRef} />
             {trailInfos.map((style, index) => {
               const info = infographics[index];
 
@@ -300,7 +302,9 @@ export default function WhatIsInside() {
             })}
           </ul>
 
-          <p className="text-center text-2xl font-medium mt-20 italic">...101 more infographics</p>
+          <p className="text-center text-2xl font-medium mt-20 italic">
+            ...101 more infographics
+          </p>
         </div>
         <Lightbox
           index={infoIndex}

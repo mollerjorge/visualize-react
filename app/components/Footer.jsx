@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 
-import logo from "../images/logo.png";
+import logo from "../images/logo.webp";
 
 const navigation = {
   main: [

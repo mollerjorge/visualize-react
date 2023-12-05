@@ -8,7 +8,7 @@ export default {
         "body-2": "#06090F",
         "bg-dark-1": "#222832",
         "light-1": "#3b3b3b",
-        "purple-1": '#A855F7',
+        "purple-1": '#9A37F6',
         "purple-2": '#C084FC',
       },
       fontFamily: {
