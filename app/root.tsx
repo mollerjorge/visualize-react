@@ -40,19 +40,20 @@ export default function App() {
           property="og:image"
           content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701784342/preview_bvo3y2.png"
         />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta
-          property="twitter:url"
-          content="master-react.georgemoller.com"
-        />
-        <meta property="twitter:title" content="100+ React Infographics and 70+ Video tutorials" />
+        
+        <meta property="twitter:url" content="master-react.georgemoller.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content="@_georgemoller" />
         <meta
           property="twitter:description"
           content="Empower Your Frontend Journey with 100+ Insightful Infographics and 70+ videos for Crafting Exceptional Web Experiences!"
         />
         <meta
-          property="twitter:image"
+          property="twitter:title"
+          content="100+ React Infographics and 70+ Video tutorials"
+        />
+        <meta
+          name="twitter:image"
           content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701784342/preview_bvo3y2.png"
         />
         <Meta />
