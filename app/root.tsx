@@ -29,7 +29,7 @@ export default function App() {
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="react-infographics.georgemoller.com" />
+        <meta property="og:url" content="master-react.georgemoller.com" />
         <meta property="og:title" content="Master React" />
         <meta
           property="og:description"
@@ -38,7 +38,7 @@ export default function App() {
 
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701781168/Frame_87_4_jxewwr.png"
+          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701784342/preview_bvo3y2.png"
         />
 
         <meta property="twitter:card" content="summary_large_image" />
@@ -46,14 +46,14 @@ export default function App() {
           property="twitter:url"
           content="master-react.georgemoller.com"
         />
-        <meta property="twitter:title" content="100+ React Infographics" />
+        <meta property="twitter:title" content="100+ React Infographics and 70+ Video tutorials" />
         <meta
           property="twitter:description"
-          content="Empower Your Frontend Journey with 100+ Insightful Infographics for Crafting Exceptional Web Experiences!"
+          content="Empower Your Frontend Journey with 100+ Insightful Infographics and 70+ videos for Crafting Exceptional Web Experiences!"
         />
         <meta
           property="twitter:image"
-          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701781168/Frame_87_4_jxewwr.png"
+          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701784342/preview_bvo3y2.png"
         />
         <Meta />
         <Links />
