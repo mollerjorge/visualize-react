@@ -48,7 +48,7 @@ export function Hero() {
   const onScroll = () => {
     const video = document.getElementById("hero-video");
     const isInView = isScrolledIntoView(video);
-    if (isInView) {
+    if (isInView && window.innerWidth > 1024) {
       video.play();
     }
   };
