@@ -38,7 +38,7 @@ export default function App() {
 
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701784342/preview_bvo3y2.png"
+          content="https://master-react.georgemoller.com/twitter-card.png"
         />
         
         <meta property="twitter:url" content="master-react.georgemoller.com" />
@@ -54,7 +54,7 @@ export default function App() {
         />
         <meta
           name="twitter:image"
-          content="https://res.cloudinary.com/dptgkdbjg/image/upload/v1701784342/preview_bvo3y2.png"
+          content="https://master-react.georgemoller.com/twitter-card.png"
         />
         <Meta />
         <Links />
