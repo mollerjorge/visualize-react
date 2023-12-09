@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: 
+Sitemap: https://master-react.georgemoller.com/sitemap.xml
