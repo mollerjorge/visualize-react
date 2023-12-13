@@ -55,6 +55,10 @@ export function Hero() {
 
   React.useEffect(() => {
     document.addEventListener("scroll", onScroll);
+
+    return () => {
+      document.removeEventListener("scroll", onScroll)
+    }
   }, []);
 
   return (
