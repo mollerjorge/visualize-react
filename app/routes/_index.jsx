@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import { Hero } from "../components/Hero";
 import { Header } from "../components/Header";
 import TheProblem from "../components/TheProblem";
@@ -5,8 +7,9 @@ import WhatIsInside from "../components/WhatIsInside";
 import Why from "../components/Why";
 import Testimonials from "../components/Testimonials";
 import Pricing from "../components/Pricing";
-import Bonus from '../components/Bonus';
+import Bonus from "../components/Bonus";
 import Footer from "../components/Footer";
+import Modal from "../components/Modal";
 
 import mixpanel from "mixpanel-browser";
 
@@ -24,6 +27,20 @@ export const meta = () => {
 };
 
 export default function Index() {
+  const [isOpen, setIsModalOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    document.addEventListener("mouseleave", function (event) {
+      if (
+        event.clientY <= 0 ||
+        event.clientX <= 0 ||
+        event.clientX >= window.innerWidth ||
+        event.clientY >= window.innerHeight
+      ) {
+        setIsModalOpen(true);
+      }
+    });
+  }, []);
   return (
     <>
       <Header />
@@ -36,6 +53,7 @@ export default function Index() {
         <Bonus />
         <Pricing />
         <Footer />
+        <Modal isOpen={isOpen} setIsOpen={setIsModalOpen} />
       </main>
     </>
   );

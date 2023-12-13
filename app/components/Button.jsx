@@ -17,15 +17,37 @@ const sparkles = (
   </svg>
 );
 
-export default function Button({ children, primary, full, to, onClick }) {
+export default function Button({
+  children,
+  primary,
+  full,
+  to,
+  onClick,
+  cn = "",
+  href = "",
+}) {
   let className =
-    "bg-purple-1 rounded-full hover:-translate-y-1 cursor-pointer transform transition-all text-lg font-bold px-8 flex items-center gap-2 py-4";
+    "bg-purple-1 rounded-full hover:-translate-y-1 cursor-pointer transform !border-0 focus:!outline-none !outline-none transition-all text-lg font-bold px-8 flex items-center gap-2 py-4";
 
   if (full) {
     className += " w-full justify-center";
   }
+  if (href) {
+    return (
+      <a
+        target="_blank"
+        href={href}
+        onClick={onClick}
+        className={`${className} ${cn} !transition-none !translate-y-0`}
+        rel="noreferrer"
+      >
+        {primary && sparkles}
+        {children}
+      </a>
+    );
+  }
   return (
-    <Link onClick={onClick} to={to} className={className}>
+    <Link onClick={onClick} to={to} className={`${className} ${cn}`}>
       {primary && sparkles}
       {children}
     </Link>
