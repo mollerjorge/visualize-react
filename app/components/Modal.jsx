@@ -55,7 +55,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
               </p>
 
               <img
-                className="w-40 transition-all mx-auto mt-10 transform hover:-translate-y-2 hover:-rotate-2"
+                className="w-52 transition-all mx-auto mt-10 transform hover:-translate-y-2 hover:-rotate-2"
                 src={questionsCover}
                 alt="book cover"
               />
