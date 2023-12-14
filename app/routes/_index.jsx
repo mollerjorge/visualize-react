@@ -53,7 +53,7 @@ export default function Index() {
         <Bonus />
         <Pricing />
         <Footer />
-        {/* <Modal isOpen={isOpen} setIsOpen={setIsModalOpen} /> */}
+        <Modal isOpen={isOpen} setIsOpen={setIsModalOpen} />
       </main>
     </>
   );
