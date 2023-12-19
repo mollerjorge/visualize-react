@@ -198,7 +198,7 @@ export default function WhatIsInside() {
       <div className="max-w-7xl mx-auto ">
         <div className="flex pt-5 mx-auto max-w-4xl items-center  flex-col mt-40">
           <div className="bg-purple-2 bg-opacity-10 mb-10 text-purple-2 rounded-full py-4 px-8 font-medium mx-auto">
-            Whtat's inside?
+            What's inside?
           </div>
 
           <h2 className="text-[40px] text-center font-bold">
