@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+
+import { Analytics } from '@vercel/analytics/react';
 
 import { Hero } from "../components/Hero";
 import { Header } from "../components/Header";
@@ -54,6 +56,7 @@ export default function Index() {
         <Pricing />
         <Footer />
         <Modal isOpen={isOpen} setIsOpen={setIsModalOpen} />
+        <Analytics />
       </main>
     </>
   );

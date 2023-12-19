@@ -16,6 +16,7 @@
     "@remix-run/node": "^2.2.0",
     "@remix-run/react": "^2.2.0",
     "@remix-run/serve": "^2.2.0",
+    "@vercel/analytics": "^1.1.1",
     "clsx": "^2.0.0",
     "isbot": "^3.6.8",
     "mixpanel-browser": "^2.48.1",
