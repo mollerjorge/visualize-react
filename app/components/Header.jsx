@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { track } from "@vercel/analytics";
 import { Link } from "@remix-run/react";
 import { Popover, Transition } from "@headlessui/react";
 import clsx from "clsx";
@@ -76,7 +77,7 @@ function MobileNavigation() {
               className="hover:text-white text-center mb-2"
               to="#what-is-inside"
               onClick={() => {
-                console.log("hey");
+                track("Click", { name: "What's inside" });
                 mixpanel.track("Click", {
                   navbar: "What is inside",
                 });
@@ -115,6 +116,7 @@ export function Header() {
           <div className="hidden text-slate-300 xl:flex md:gap-10 text-lg font-semibold xl:ml-40 ">
             <Link
               onClick={() => {
+                track("Click", { name: "Overview" });
                 mixpanel.track("Click", {
                   navbar: "Overview",
                 });
@@ -126,6 +128,7 @@ export function Header() {
             </Link>
             <Link
               onClick={() => {
+                track("Click", { name: "What's inside" });
                 mixpanel.track("Click", {
                   navbar: "What is inside",
                 });
@@ -137,6 +140,7 @@ export function Header() {
             </Link>
             <Link
               onClick={() => {
+                track("Click", { name: "Testimonials" });
                 mixpanel.track("Click", {
                   navbar: "Testimonials",
                 });
@@ -148,6 +152,7 @@ export function Header() {
             </Link>
             <Link
               onClick={() => {
+                track("Click", { name: "Pricing" });
                 mixpanel.track("Click", {
                   navbar: "Pricing",
                 });
@@ -163,6 +168,7 @@ export function Header() {
             <div className="hidden md:block">
               <Button
                 onClick={() => {
+                  track("Get it now", { name: "navbar" });
                   mixpanel.track("Click", {
                     "Get it now": "navbar",
                   });

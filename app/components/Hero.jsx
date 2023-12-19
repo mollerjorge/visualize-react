@@ -1,4 +1,5 @@
 import React from "react";
+import { track } from "@vercel/analytics";
 
 import { animated, useSpring, config } from "@react-spring/web";
 import mixpanel from "mixpanel-browser";
@@ -152,6 +153,7 @@ export function Hero() {
         >
           <Button
             onClick={() => {
+              track("Get it now", { name: "Hero" });
               mixpanel.track("Click", {
                 "Get it now": "hero",
               });

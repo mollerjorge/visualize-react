@@ -1,6 +1,7 @@
 import Button from "./Button";
 
 import mixpanel from "mixpanel-browser";
+import { track } from "@vercel/analytics";
 
 import pricingComments from "../images/pricing-commets.webp";
 import silverMedal from "../images/silver_medal.webp";
@@ -303,6 +304,7 @@ export default function Pricing() {
                       } else {
                         pricingName = "Videos & Infographics";
                       }
+                      track("Get it now", { name: pricingName });
                       mixpanel.track("Click", {
                         "Get it now": pricingName,
                       });

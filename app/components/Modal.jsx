@@ -1,4 +1,5 @@
 import React from "react";
+import { track } from "@vercel/analytics";
 
 import mixpanel from "mixpanel-browser";
 
@@ -62,6 +63,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
 
               <Button
                 onClick={() => {
+                  track("Click", { name: "Download 30 Interview Questions and Answers" });
                   mixpanel.track("Click", {
                     navbar: "Download 30 Interview Questions and Answers",
                   });

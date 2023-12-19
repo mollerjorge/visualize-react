@@ -1,5 +1,6 @@
 import TestimonialCard from "../components/TestimonialCard";
 import mixpanel from "mixpanel-browser";
+import { track } from "@vercel/analytics";
 
 import profile1 from "../images/profiles/profile-1.webp";
 import profile2 from "../images/profiles/profile-2.webp";
@@ -200,6 +201,7 @@ export default function Testimonials() {
 
             <Button
               onClick={() => {
+                track("Get it now", { name: "Testimonials" });
                 mixpanel.track("Click", {
                   "Get it now": "testimonials",
                 });
