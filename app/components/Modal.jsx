@@ -10,8 +10,18 @@ import questionsCover from "../images/questions-cover.webp";
 const Modal = ({ isOpen, setIsOpen }) => {
   const [email, setEmail] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [title, setTitle] = React.useState("I don't want you to leave empty handed 😊");
+
   const formUrl =
-    "https://georgemoller.lemonsqueezy.com/email-subscribe/external";
+  "https://georgemoller.lemonsqueezy.com/email-subscribe/external";
+  
+  React.useEffect(() => {
+    const openInterviewModal = window.location.search?.includes("interview")
+    if (openInterviewModal) {
+      setTitle('React Interview Questions & Answers e-book')
+      setIsOpen(true);
+    }
+  }, []);
   return (
     <Transition appear show={isOpen} as={React.Fragment}>
       <Dialog onClose={() => setIsOpen(false)} className="relative z-50 ">
@@ -49,7 +59,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
               />
               <Dialog.Title>
                 <h1 className="text-3xl text-center text-white font-bold">
-                  I don&apos;t want you to leave empty handed 😊
+                  {title}
                 </h1>
               </Dialog.Title>
 
@@ -88,7 +98,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
                         `${window.location.origin}/react-interview-questions-and-answers.pdf`,
                         "_blank"
                       );
-                      setIsOpen(false)
+                      setIsOpen(false);
                     } else {
                       // Something went wrong subscribing the user
                       alert("Sorry, we couldn't subscribe you.");
@@ -139,7 +149,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
                       ></path>
                     </svg>
                   )}
-                  {loading ? 'Loading...' : 'Download now'}
+                  {loading ? "Loading..." : "Download now"}
                 </button>
               </form>
             </Dialog.Panel>
