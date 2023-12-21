@@ -6,9 +6,12 @@ import mixpanel from "mixpanel-browser";
 import { Dialog, Transition } from "@headlessui/react";
 import interviewBg from "../images/interview-bg.webp";
 import questionsCover from "../images/questions-cover.webp";
-import Button from "./Button";
 
 const Modal = ({ isOpen, setIsOpen }) => {
+  const [email, setEmail] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const formUrl =
+    "https://georgemoller.lemonsqueezy.com/email-subscribe/external";
   return (
     <Transition appear show={isOpen} as={React.Fragment}>
       <Dialog onClose={() => setIsOpen(false)} className="relative z-50 ">
@@ -61,19 +64,83 @@ const Modal = ({ isOpen, setIsOpen }) => {
                 alt="book cover"
               />
 
-              <Button
-                onClick={() => {
-                  track("Click", { name: "Download 30 Interview Questions and Answers" });
+              <form
+                className="z-10"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  track("Click", {
+                    name: "Download 30 Interview Questions and Answers",
+                  });
                   mixpanel.track("Click", {
                     navbar: "Download 30 Interview Questions and Answers",
                   });
+                  setLoading(true);
+
+                  try {
+                    let response = await fetch(formUrl, {
+                      method: "POST",
+                      body: new FormData(e.target),
+                    });
+
+                    if (response.ok) {
+                      // Redirect the subscriber
+                      window.open(
+                        `${window.location.origin}/react-interview-questions-and-answers.pdf`,
+                        "_blank"
+                      );
+                    } else {
+                      // Something went wrong subscribing the user
+                      alert("Sorry, we couldn't subscribe you.");
+                    }
+                  } catch (error) {
+                    alert("Sorry, there was an issue: " + error);
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
-                href="react-interview-questions-and-answers.pdf"
-                primary
-                cn="mx-auto w-fit !mt-10"
               >
-                Download now
-              </Button>
+                <input
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                  }}
+                  type="email"
+                  name="email"
+                  id="email"
+                  required
+                  className="w-full bg-white rounded-xl focus:ring-4 focus:ring-offset-2 mt-4 font-semibold text-slate-800 focus:ring-purple-400 z-10 px-4 outline-none py-4 border-none"
+                />
+
+                <button
+                  className="bg-purple-1 mx-auto w-fit !mt-10 rounded-full hover:-translate-y-1 cursor-pointer transform !border-0 focus:!outline-none !outline-none transition-all text-lg font-bold px-8 flex items-center gap-2 py-4"
+                  primary
+                >
+                  {loading && (
+                    <svg
+                      class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  )}
+                  {loading ? 'Loading...' : 'Download now'}
+                </button>
+              </form>
             </Dialog.Panel>
           </Transition.Child>
         </div>
