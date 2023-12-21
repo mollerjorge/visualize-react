@@ -88,6 +88,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
                         `${window.location.origin}/react-interview-questions-and-answers.pdf`,
                         "_blank"
                       );
+                      setIsOpen(false)
                     } else {
                       // Something went wrong subscribing the user
                       alert("Sorry, we couldn't subscribe you.");
