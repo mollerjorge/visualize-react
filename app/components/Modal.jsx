@@ -10,15 +10,17 @@ import questionsCover from "../images/questions-cover.webp";
 const Modal = ({ isOpen, setIsOpen }) => {
   const [email, setEmail] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [title, setTitle] = React.useState("I don't want you to leave empty handed 😊");
+  const [title, setTitle] = React.useState(
+    "I don't want you to leave empty handed 😊"
+  );
 
   const formUrl =
-  "https://georgemoller.lemonsqueezy.com/email-subscribe/external";
-  
+    "https://georgemoller.lemonsqueezy.com/email-subscribe/external";
+
   React.useEffect(() => {
-    const openInterviewModal = window.location.search?.includes("interview")
+    const openInterviewModal = window.location.search?.includes("interview");
     if (openInterviewModal) {
-      setTitle('React Interview Questions & Answers e-book')
+      setTitle("React Interview Questions & Answers e-book");
       setIsOpen(true);
     }
   }, []);
@@ -94,10 +96,10 @@ const Modal = ({ isOpen, setIsOpen }) => {
 
                     if (response.ok) {
                       // Redirect the subscriber
-                      window.open(
-                        `${window.location.origin}/react-interview-questions-and-answers.pdf`,
-                        "_blank"
-                      );
+                      var link = document.createElement("a");
+                      link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
+                      link.download = "file.pdf";
+                      link.dispatchEvent(new MouseEvent("click"));
                       setIsOpen(false);
                     } else {
                       // Something went wrong subscribing the user
