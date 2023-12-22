@@ -170,7 +170,7 @@ export function Hero() {
               <video
                 id="hero-video"
                 className="mx-auto w-full h-[187px] sm:w-[440px] sm:h-[234px] lg:w-[880px] lg:h-[457px]"
-                src="https://res.cloudinary.com/dptgkdbjg/video/upload/v1701553940/Main_4_qjplan.mp4"
+                src="./intro.mp4"
                 controls
                 muted
               >

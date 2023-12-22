@@ -63,7 +63,7 @@ const videos = [
     poster: video1cover,
     sources: [
       {
-        src: "https://res.cloudinary.com/dptgkdbjg/video/upload/v1700325870/conditional_rendering_enums_o26jnx.mp4",
+        src: "./conditional rendering enums.m4v",
         type: "video/mp4",
       },
     ],
@@ -78,7 +78,7 @@ const videos = [
     poster: video2cover,
     sources: [
       {
-        src: "https://res.cloudinary.com/dptgkdbjg/video/upload/v1700325846/absolute_imports_udq6aj.mp4",
+        src: "absolute imports.m4v",
         type: "video/mp4",
       },
     ],
@@ -93,7 +93,7 @@ const videos = [
     poster: video3cover,
     sources: [
       {
-        src: "https://res.cloudinary.com/dptgkdbjg/video/upload/v1700325917/clean_up_your_providers_hg313h.mp4",
+        src: "./avoid provider wrapping hell.m4v",
         type: "video/mp4",
       },
     ],
@@ -108,7 +108,7 @@ const videos = [
     poster: video4cover,
     sources: [
       {
-        src: "https://res.cloudinary.com/dptgkdbjg/video/upload/v1700325963/avoid_syncing_state_in_useeffect_m8edyr.mp4",
+        src: "./avoid syncing state in useeffect.m4v",
         type: "video/mp4",
       },
     ],
@@ -123,7 +123,7 @@ const videos = [
     poster: video5cover,
     sources: [
       {
-        src: "https://res.cloudinary.com/dptgkdbjg/video/upload/v1700325739/embrace_composition_kfiqxr.mp4",
+        src: "./embrace composition.m4v",
         type: "video/mp4",
       },
     ],
@@ -138,7 +138,7 @@ const videos = [
     poster: video6cover,
     sources: [
       {
-        src: "https://res.cloudinary.com/dptgkdbjg/video/upload/v1700330097/factory_pattern_zxcesz.mp4",
+        src: "./factory pattern.m4v",
         type: "video/mp4",
       },
     ],

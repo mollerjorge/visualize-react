@@ -53,7 +53,7 @@ export default function Bonus() {
         <div className="w-fit  bg-[#D9D9D9] max-w-4xl bg-opacity-10 relative p-10 mx-auto rounded-[42px]">
           <video controls id="bonus-video" className="w-full mx-auto " muted loop>
             <source
-              src="https://res.cloudinary.com/dptgkdbjg/video/upload/v1700425788/interview_challenges_book_orhlnc.mp4"
+              src="./interview-challenges-book.m4v"
               type="video/mp4"
             />
             Your browser does not support the video tag.
