@@ -23,8 +23,8 @@ mixpanel.init("fa22af7fecb1e5b8d0c88bd7111c0c63", {
 
 export const meta = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Master React" },
+    { name: "description", content: "Empower Your Frontend Journey with 100+ Insightful Infographics and 70+ video tutorials for Crafting Exceptional Web Experiences!" },
   ];
 };
 
