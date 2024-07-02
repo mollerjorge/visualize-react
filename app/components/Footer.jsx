@@ -48,7 +48,7 @@ export default function Footer() {
           ))}
         </div>
         <p className="mt-10 text-center text-sm leading-5 text-gray-400">
-          &copy; 2023 George Moller, Inc. All rights reserved.
+          &copy; 2024 George Moller, Inc. All rights reserved.
         </p>
       </div>
     </footer>
