@@ -7,21 +7,22 @@
   src: url("./fonts/THICCCBOI-Bold.woff2");
   font-weight: 700;
 }
-@font-face {
+/* @font-face {
   font-family: "Thiccboi";
   src: url("./fonts/THICCCBOI-Medium.woff2");
   font-weight: 500;
-}
+} */
+
 @font-face {
   font-family: "Thiccboi";
   src: url("./fonts/THICCCBOI-Regular.woff2");
   font-weight: 400;
 }
-@font-face {
+/* @font-face {
   font-family: "Thiccboi";
   src: url("./fonts/THICCCBOI-SemiBold.woff2");
   font-weight: 600;
-}
+} */
 
 @keyframes scroll {
   0% {
