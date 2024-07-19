@@ -64,7 +64,7 @@ export function Hero() {
 
   return (
     <>
-      <animated.div
+      <div
         style={styles}
         className="flex pt-5 mx-auto max-w-4xl justify-center items-start md:justify-between"
       >
@@ -86,7 +86,7 @@ export function Hero() {
             A lot of tips I haven't found elsewhere
           </p>
         </div>
-      </animated.div>
+      </div>
       <div className="pb-16 pt-20 text-center lg:pt-24">
         <img
           src={star1}
@@ -98,7 +98,7 @@ export function Hero() {
           className="-z-[1] absolute bottom-0 -left-40 sm:left-auto sm:right-20"
           alt="star-2"
         />
-        <animated.h1
+        <h1
           style={stylesHeading}
           className="mx-auto max-w-4xl font-display text-5xl font-bold tracking-tight text-white sm:text-7xl"
         >
@@ -138,16 +138,16 @@ export function Hero() {
             </span>
           </span>{" "}
           React developer at your company.
-        </animated.h1>
-        <animated.p
+        </h1>
+        <p
           style={stylesHeading}
           className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-100 font-medium"
         >
           107 beautifully designed infographics and 77 dynamic video tutorials
           will take you from enthusiast to React professional. Start mastering
           React now!.
-        </animated.p>
-        <animated.div
+        </p>
+        <div
           style={stylesHeading}
           className="mt-10 flex justify-center gap-x-6"
         >
@@ -163,7 +163,7 @@ export function Hero() {
           >
             Get it now
           </Button>
-        </animated.div>
+        </div>
         <div className="mt-10 lg:mt-20 p-5 ">
           <div className="mx-auto ">
             <div className="w-fit before:absolute before:w-full  bg-[#D9D9D9] bg-opacity-10 relative p-5 md:p-10 mx-auto rounded-[42px]">
@@ -173,6 +173,7 @@ export function Hero() {
                 src="./intro.mp4"
                 controls
                 muted
+                preload="none"
               >
                 <track src="https://res.cloudinary.com/dptgkdbjg/raw/upload/v1701792511/subs_en_rok8yu.vtt" kind="captions" srcLang="en" label="english_captions" />
               </video>
