@@ -57,6 +57,7 @@ export default function Index() {
         <Footer />
         <Modal isOpen={isOpen} setIsOpen={setIsModalOpen} />
         <Analytics />
+        <script src="https://cdn.paritydeals.com/banner.js" async />
       </main>
     </>
   );
