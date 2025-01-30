@@ -142,8 +142,8 @@ const Pricings = [
   },
   {
     title: "Videos & Infographics",
-    price: "$54.00",
-    fullPrice: "$108.00",
+    price: "$59.00",
+    fullPrice: "$84.00",
     href: "https://georgemoller.lemonsqueezy.com/checkout/buy/601f46d6-3f75-4ab8-8ae1-70a5f1006c50",
     content: [
       {
@@ -233,12 +233,9 @@ export default function Pricing() {
             className="absolute -left-60 -top-20 w-1/2"
           />
 
-         <span className="py-1 text-sm text-center md:text-lg px-4 mt-10 border-purple-500 border inline-flex items-center gap-x-1 font-medium bg-purple-100 text-purple-800 rounded-full dark:bg-purple-500/10 dark:text-purple-500">
-         Join over 5300+ developers who already trusted this course
-         </span>
-         
-         
-            
+          <span className="py-1 text-sm text-center md:text-lg px-4 mt-10 border-purple-500 border inline-flex items-center gap-x-1 font-medium bg-purple-100 text-purple-800 rounded-full dark:bg-purple-500/10 dark:text-purple-500">
+            Join over 5300+ developers who already trusted this course
+          </span>
 
           <ul className="grid grid-cols-1 lg:grid-cols-3 mt-10 gap-8 relative ">
             {Pricings.map((pricing, index) => {
@@ -281,7 +278,7 @@ export default function Pricing() {
                         </span>{" "}
                       </p>
                       <div className="border-purple-2 border rounded-full text-center font-bold text-xs bg-purple-2 bg-opacity-10">
-                        50% OFF
+                        {index === 2 ? '30% OFF' : '50% OFF'}
                       </div>
                     </div>
 
