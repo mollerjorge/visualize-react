@@ -142,8 +142,8 @@ const Pricings = [
   },
   {
     title: "Videos & Infographics",
-    price: "$59.00",
-    fullPrice: "$84.00",
+    price: "$54.00",
+    fullPrice: "$77.00",
     href: "https://georgemoller.lemonsqueezy.com/checkout/buy/601f46d6-3f75-4ab8-8ae1-70a5f1006c50",
     content: [
       {
