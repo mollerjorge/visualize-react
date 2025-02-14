@@ -14,6 +14,7 @@ import Footer from "../components/Footer";
 import Modal from "../components/Modal";
 
 import mixpanel from "mixpanel-browser";
+import Marquee from "~/components/Marquee";
 
 mixpanel.init("fa22af7fecb1e5b8d0c88bd7111c0c63", {
   debug: true,
@@ -48,6 +49,7 @@ export default function Index() {
       <Header />
       <main>
         <Hero />
+        {/* <Marquee /> */}
         <TheProblem />
         <WhatIsInside />
         <Why />

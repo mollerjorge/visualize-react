@@ -7,6 +7,7 @@ import pricingComments from "../images/pricing-commets.webp";
 import silverMedal from "../images/silver_medal.webp";
 import glassTrophy from "../images/glass_trophy.webp";
 import goldMedal from "../images/gold_medal.webp";
+import Marquee from "./Marquee";
 
 const Pricings = [
   {
@@ -209,122 +210,119 @@ const Pricings = [
 
 export default function Pricing() {
   return (
-    <div className="py-40 bg-body-1 relative">
-      <div className="mx-5 z-10">
-        <div className="max-w-7xl mx-auto flex items-center flex-col overflow-hidden">
-          <div className="bg-purple-2 bg-opacity-10 mb-10 text-purple-2 rounded-full py-4 px-8 font-medium">
-            Pricing
-          </div>
-
-          <h2
-            id="pricing"
-            className="text-[32px] md:text-[40px] text-center leading-tight font-bold"
-          >
-            Pay once, get lifetime updates
-          </h2>
-          <p className="text-lg max-w-lg text-center">
-            Enjoy lifetime updates to both the infographics and videos. New
-            infographics and videos each week.
-          </p>
-
-          <img
-            src={pricingComments}
-            alt="pricing background comments"
-            className="absolute -left-60 -top-20 w-1/2"
-          />
-
-          <span className="py-1 text-sm text-center md:text-lg px-4 mt-10 border-purple-500 border inline-flex items-center gap-x-1 font-medium bg-purple-100 text-purple-800 rounded-full dark:bg-purple-500/10 dark:text-purple-500">
-            Join over 5300+ developers who already trusted this course
-          </span>
-
-          <ul className="grid grid-cols-1 lg:grid-cols-3 mt-10 gap-8 relative ">
-            {Pricings.map((pricing, index) => {
-              return (
-                <li
-                  key={index}
-                  className={`max-w-[310px] sm:max-w-[271px] z-10 md:max-w-none rounded-[32px] bg-slate-800 border border-light-1 px-8 lg:!px-8 py-5 w-[332px] flex justify-between flex-col ${pricing.background}`}
-                >
-                  <div className=" flex justify-between flex-col mb-8 relative">
-                    {index === 0 && (
-                      <img
-                        src={silverMedal}
-                        alt="star trophy"
-                        className="w-24 mb-5"
-                      />
-                    )}
-                    {index === 2 && (
-                      <img
-                        src={goldMedal}
-                        alt="star trophy"
-                        className="w-24 mb-5"
-                      />
-                    )}
-                    {index === 1 && (
-                      <img
-                        src={glassTrophy}
-                        alt="star trophy"
-                        className="w-24 mb-5"
-                      />
-                    )}
-                    <h3 className=" text-[25px] font-bold mb-8 leading-tight">
-                      {pricing.title}
-                    </h3>
-                    <div className="flex flex-col w-fit">
-                      <p className="font-bold text-3xl">
-                        {pricing.price}
-                        <span className="ml-2 text-[22px] opacity-40 relative">
-                          <span className="w-full rounded-full bg-white h-[3px] absolute bottom-3 -rotate-[170deg]" />
-                          {pricing.fullPrice}
-                        </span>{" "}
-                      </p>
-                      <div className="border-purple-2 border rounded-full text-center font-bold text-xs bg-purple-2 bg-opacity-10">
-                        {index === 2 ? '30% OFF' : '50% OFF'}
-                      </div>
-                    </div>
-
-                    <div className="h-[1px] w-full bg-white bg-opacity-10 my-5" />
-
-                    <ul className="flex flex-col gap-4">
-                      {pricing.content.map((item) => {
-                        return (
-                          <li
-                            key={item.name}
-                            className="flex items-start gap-2"
-                          >
-                            {item.icon}
-                            <span className="flex-1">{item.name}</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      let pricingName = 0;
-                      if (index === 0) {
-                        pricingName = "Infographics";
-                      } else if (index === 1) {
-                        pricingName = "Video Course";
-                      } else {
-                        pricingName = "Videos & Infographics";
-                      }
-                      track("Get it now", { name: pricingName });
-                      mixpanel.track("Click", {
-                        "Get it now": pricingName,
-                      });
-                    }}
-                    to={pricing.href}
-                    primary
-                    full
-                  >
-                    <span>Get it now</span>
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
+    <div className="py-40 bg-body-1">
+      <div className="">
+        <div className="max-w-max mx-auto bg-purple-2 bg-opacity-10 mb-10 text-purple-2 rounded-full py-4 px-8 font-medium">
+          Pricing
         </div>
+
+        <h2
+          id="pricing"
+          className="max-w-max mx-auto text-[32px] md:text-[40px] text-center leading-tight font-bold"
+        >
+          Pay once, get lifetime updates
+        </h2>
+        <p className=" max-w-7xl mx-auto text-lg max-w-lg text-center">
+          Enjoy lifetime updates to both the infographics and videos. New
+          infographics and videos each week.
+        </p>
+
+        <Marquee />
+
+        <img
+          src={pricingComments}
+          alt="pricing background comments"
+          className="absolute -left-60 -top-20 w-1/2"
+        />
+
+        <ul className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 mt-10 gap-8 relative justify-items-center">
+          {Pricings.map((pricing, index) => {
+            return (
+              <li
+                key={index}
+                className={`max-w-[310px] sm:max-w-[271px] z-10 md:max-w-none rounded-[32px] bg-slate-800 border border-light-1 px-8 lg:!px-8 py-5 w-[332px] flex justify-between flex-col ${pricing.background}`}
+              >
+                <div className="flex justify-between flex-col mb-8 relative">
+                  {index === 0 && (
+                    <img
+                      src={silverMedal}
+                      alt="star trophy"
+                      className="w-24 mb-5"
+                    />
+                  )}
+                  {index === 2 && (
+                    <img
+                      src={goldMedal}
+                      alt="star trophy"
+                      className="w-24 mb-5"
+                    />
+                  )}
+                  {index === 1 && (
+                    <img
+                      src={glassTrophy}
+                      alt="star trophy"
+                      className="w-24 mb-5"
+                    />
+                  )}
+                  <h3 className="text-[25px] font-bold mb-8 leading-tight">
+                    {pricing.title}
+                  </h3>
+                  <div className="flex flex-col w-fit">
+                    <p className="font-bold text-3xl">
+                      {pricing.price}
+                      <span className="ml-2 text-[22px] opacity-40 relative">
+                        <span className="w-full rounded-full bg-white h-[3px] absolute bottom-3 -rotate-[170deg]" />
+                        {pricing.fullPrice}
+                      </span>{" "}
+                    </p>
+                    <div className="border-purple-2 border rounded-full text-center font-bold text-xs bg-purple-2 bg-opacity-10">
+                      {index === 2 ? '30% OFF' : '50% OFF'}
+                    </div>
+                  </div>
+
+                  <div className="h-[1px] w-full bg-white bg-opacity-10 my-5" />
+
+                  <ul className="flex flex-col gap-4">
+                    {pricing.content.map((item) => {
+                      return (
+                        <li
+                          key={item.name}
+                          className="flex items-start gap-2"
+                        >
+                          {item.icon}
+                          <span className="flex-1">{item.name}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <Button
+                  onClick={() => {
+                    let pricingName = 0;
+                    if (index === 0) {
+                      pricingName = "Infographics";
+                    } else if (index === 1) {
+                      pricingName = "Video Course";
+                    } else {
+                      pricingName = "Videos & Infographics";
+                    }
+                    track("Get it now", { name: pricingName });
+                    mixpanel.track("Click", {
+                      "Get it now": pricingName,
+                    });
+                  }}
+                  to={pricing.href}
+                  primary
+                  full
+                >
+                  <span>Get it now</span>
+                </Button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
+
     </div>
   );
 }
