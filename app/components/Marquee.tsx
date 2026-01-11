@@ -17,14 +17,22 @@ export default function Marquee() {
                 {/* Gradient Overlay - Left */}
                 <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-body-1 to-transparent"></div>
 
-                {/* First scroll */}
-                <div className="animate-marquee whitespace-nowrap flex gap-10 mr-4">
-                    {[...logos, ...logos, ...logos, ...logos].map((logo, idx) => (
+                {/* Scrolling container - content duplicated for seamless loop */}
+                <div className="animate-marquee flex">
+                    {[...logos, ...logos].map((logo, idx) => (
                         <img
                             key={`logo-1-${idx}`}
                             src={logo.src}
                             alt={logo.alt}
-                            className="dark:brightness-0 dark:invert h-10 w-28"
+                            className="dark:brightness-0 dark:invert h-10 w-28 mx-8 flex-shrink-0"
+                        />
+                    ))}
+                    {[...logos, ...logos].map((logo, idx) => (
+                        <img
+                            key={`logo-2-${idx}`}
+                            src={logo.src}
+                            alt={logo.alt}
+                            className="dark:brightness-0 dark:invert h-10 w-28 mx-8 flex-shrink-0"
                         />
                     ))}
                 </div>
