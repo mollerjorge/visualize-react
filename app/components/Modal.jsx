@@ -6,6 +6,7 @@ import mixpanel from "mixpanel-browser";
 import { Dialog, Transition } from "@headlessui/react";
 import interviewBg from "../images/interview-bg.webp";
 import questionsCover from "../images/questions-cover.webp";
+import { setMaxIdleHTTPParsers } from "node:http";
 
 const Modal = ({ isOpen, setIsOpen }) => {
   const [email, setEmail] = React.useState("");
@@ -87,41 +88,26 @@ const Modal = ({ isOpen, setIsOpen }) => {
                     navbar: "Download 30 Interview Questions and Answers",
                   });
                   setLoading(true);
-
-                  try {
-                    let response = await fetch(formUrl, {
-                      method: "POST",
-                      body: new FormData(e.target),
+                  if (typeof window !== 'undefined' && window.op) {
+                    window.op('track', 'form_submitted', {
+                      form_name: 'email_capture',
+                      form_type: 'exit_intent_modal',
+                      status: 'success'
                     });
-
-
-                    if (typeof window !== 'undefined' && window.op) {
-                      window.op('track', 'form_submitted', {
-                        form_name: 'email_capture',
-                        form_type: 'exit_intent_modal',
-                        status: 'success'
-                      });
-                    }
-                    // Redirect the subscriber
-                    var link = document.createElement("a");
-                    link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
-                    link.download = "file.pdf";
-                    link.dispatchEvent(new MouseEvent("click"));
-                    setIsOpen(false);
-
-                  } catch (error) {
-                    if (typeof window !== 'undefined' && window.op) {
-                      window.op('track', 'form_submitted', {
-                        form_name: 'email_capture',
-                        form_type: 'exit_intent_modal',
-                        status: 'error',
-                        error_type: 'network'
-                      });
-                    }
-                    // alert("Sorry, there was an issue: " + error);
-                  } finally {
-                    setLoading(false);
                   }
+
+                  // Redirect the subscriber
+                  var link = document.createElement("a");
+                  link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
+                  link.download = "file.pdf";
+                  link.dispatchEvent(new MouseEvent("click"));
+                  setIsOpen(false);
+                  setIsLoading(false);
+
+                  let response = await fetch(formUrl, {
+                    method: "POST",
+                    body: new FormData(e.target),
+                  });
                 }}
               >
                 <input
