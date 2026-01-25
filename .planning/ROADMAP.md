@@ -43,10 +43,10 @@ Plans:
   3. Pricing button clicks tracked (all three tiers)
   4. Events include contextual metadata (button location, CTA type)
   5. Event names follow consistent schema across all providers
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD during planning
+- [ ] 02-01-PLAN.md — Add click tracking to Header, Hero, and Pricing components
 
 ### Phase 3: Form & Video Events
 **Goal**: Email capture and video engagement tracked
@@ -71,5 +71,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. SDK Integration | 1/1 | Complete | 2026-01-25 |
-| 2. Click Event Tracking | 0/TBD | Ready | - |
+| 2. Click Event Tracking | 0/1 | Ready | - |
 | 3. Form & Video Events | 0/TBD | Not started | - |
