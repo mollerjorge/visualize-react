@@ -29,6 +29,50 @@ export default function Bonus() {
     };
   }, []);
 
+  React.useEffect(() => {
+    const video = document.getElementById('bonus-video');
+    if (!video) return;
+
+    const handlePlay = () => {
+      if (typeof window !== 'undefined' && window.op) {
+        window.op('track', 'video_played', {
+          video_id: 'bonus-video',
+          video_title: 'React Interview Questions',
+          location: 'bonus'
+        });
+      }
+    };
+
+    const handlePause = () => {
+      if (typeof window !== 'undefined' && window.op) {
+        window.op('track', 'video_paused', {
+          video_id: 'bonus-video',
+          play_position: Math.round(video.currentTime),
+          duration: Math.round(video.duration)
+        });
+      }
+    };
+
+    const handleEnded = () => {
+      if (typeof window !== 'undefined' && window.op) {
+        window.op('track', 'video_completed', {
+          video_id: 'bonus-video',
+          duration: Math.round(video.duration)
+        });
+      }
+    };
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handleEnded);
+
+    return () => {
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   return (
     <div className="py-20 bg-body-1 relative">
       <img
