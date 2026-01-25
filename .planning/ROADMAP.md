@@ -58,10 +58,10 @@ Plans:
   3. Bonus video play events tracked
   4. Form submission events include success/failure status
   5. Video events include video ID and play position
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD during planning
+- [ ] 03-01-PLAN.md — Track form submission and video play/pause/ended events
 
 ## Progress
 
@@ -72,4 +72,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. SDK Integration | 1/1 | Complete | 2026-01-25 |
 | 2. Click Event Tracking | 1/1 | Complete | 2026-01-25 |
-| 3. Form & Video Events | 0/TBD | Ready | - |
+| 3. Form & Video Events | 0/1 | Ready | - |
