@@ -62,6 +62,50 @@ export function Hero() {
     }
   }, []);
 
+  React.useEffect(() => {
+    const video = document.getElementById('hero-video');
+    if (!video) return;
+
+    const handlePlay = () => {
+      if (typeof window !== 'undefined' && window.op) {
+        window.op('track', 'video_played', {
+          video_id: 'hero-video',
+          video_title: 'Course intro',
+          location: 'hero'
+        });
+      }
+    };
+
+    const handlePause = () => {
+      if (typeof window !== 'undefined' && window.op) {
+        window.op('track', 'video_paused', {
+          video_id: 'hero-video',
+          play_position: Math.round(video.currentTime),
+          duration: Math.round(video.duration)
+        });
+      }
+    };
+
+    const handleEnded = () => {
+      if (typeof window !== 'undefined' && window.op) {
+        window.op('track', 'video_completed', {
+          video_id: 'hero-video',
+          duration: Math.round(video.duration)
+        });
+      }
+    };
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handleEnded);
+
+    return () => {
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   return (
     <>
       <div
