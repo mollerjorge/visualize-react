@@ -17,8 +17,8 @@ import mixpanel from "mixpanel-browser";
 import Marquee from "~/components/Marquee";
 
 mixpanel.init("fa22af7fecb1e5b8d0c88bd7111c0c63", {
-  debug: true,
-  track_pageview: true,
+  debug: false,
+  track_pageview: false,
   persistence: "localStorage",
 });
 
