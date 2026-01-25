@@ -64,6 +64,12 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}},has:function(t,r){return"q"===r}})}();window.op('init',{clientId:'c1eb2b83-2218-46cd-907b-ce5681c8ad76',trackScreenViews:true,trackOutgoingLinks:true,trackAttributes:true});`,
+          }}
+        />
+        <script src="https://openpanel.dev/op1.js" defer async />
       </body>
     </html>
   );
