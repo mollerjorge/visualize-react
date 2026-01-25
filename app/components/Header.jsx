@@ -70,7 +70,17 @@ function MobileNavigation() {
             as="div"
             className="absolute inset-x-0 top-full mt-4 flex origin-top flex-col rounded-2xl bg-slate-800 p-4 text-lg tracking-tight text-white shadow-xl ring-1 ring-slate-900/5"
           >
-            <Link className="hover:text-white text-center mb-2" to="#overview">
+            <Link className="hover:text-white text-center mb-2" to="#overview"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'mobile_menu',
+                    link_text: 'Overview',
+                    link_destination: '#overview'
+                  });
+                }
+              }}
+            >
               Overview
             </Link>
             <Link
@@ -81,6 +91,13 @@ function MobileNavigation() {
                 mixpanel.track("Click", {
                   navbar: "What is inside",
                 });
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'mobile_menu',
+                    link_text: "What's inside?",
+                    link_destination: '#what-is-inside'
+                  });
+                }
               }}
             >
               What's inside?
@@ -88,10 +105,29 @@ function MobileNavigation() {
             <Link
               className="hover:text-white text-center mb-2"
               to="#testimonials"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'mobile_menu',
+                    link_text: 'Testimonials',
+                    link_destination: '#testimonials'
+                  });
+                }
+              }}
             >
               Testimonials
             </Link>
-            <Link className="hover:text-white text-center mb-2" to="#pricing">
+            <Link className="hover:text-white text-center mb-2" to="#pricing"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'mobile_menu',
+                    link_text: 'Pricing',
+                    link_destination: '#pricing'
+                  });
+                }
+              }}
+            >
               Pricing
             </Link>
           </Popover.Panel>
@@ -120,6 +156,13 @@ export function Header() {
                 mixpanel.track("Click", {
                   navbar: "Overview",
                 });
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'header',
+                    link_text: 'Overview',
+                    link_destination: '#overview'
+                  });
+                }
               }}
               className="hover:text-white"
               to="#overview"
@@ -132,6 +175,13 @@ export function Header() {
                 mixpanel.track("Click", {
                   navbar: "What is inside",
                 });
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'header',
+                    link_text: "What's inside?",
+                    link_destination: '#what-is-inside'
+                  });
+                }
               }}
               className="hover:text-white"
               to="#what-is-inside"
@@ -144,6 +194,13 @@ export function Header() {
                 mixpanel.track("Click", {
                   navbar: "Testimonials",
                 });
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'header',
+                    link_text: 'Testimonials',
+                    link_destination: '#testimonials'
+                  });
+                }
               }}
               className="hover:text-white"
               to="#testimonials"
@@ -156,6 +213,13 @@ export function Header() {
                 mixpanel.track("Click", {
                   navbar: "Pricing",
                 });
+                if (typeof window !== 'undefined' && window.op) {
+                  window.op('track', 'nav_link_clicked', {
+                    location: 'header',
+                    link_text: 'Pricing',
+                    link_destination: '#pricing'
+                  });
+                }
               }}
               className="hover:text-white"
               to="#pricing"
@@ -172,6 +236,14 @@ export function Header() {
                   mixpanel.track("Click", {
                     "Get it now": "navbar",
                   });
+                  if (typeof window !== 'undefined' && window.op) {
+                    window.op('track', 'cta_clicked', {
+                      button_text: 'Get it now',
+                      location: 'header',
+                      cta_type: 'primary',
+                      link_destination: '#pricing'
+                    });
+                  }
                 }}
                 to="#pricing"
                 primary
