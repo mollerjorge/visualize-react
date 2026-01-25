@@ -157,6 +157,14 @@ export function Hero() {
               mixpanel.track("Click", {
                 "Get it now": "hero",
               });
+              if (typeof window !== 'undefined' && window.op) {
+                window.op('track', 'cta_clicked', {
+                  button_text: 'Get it now',
+                  location: 'hero',
+                  cta_type: 'primary',
+                  link_destination: '#pricing'
+                });
+              }
             }}
             to="#pricing"
             primary
