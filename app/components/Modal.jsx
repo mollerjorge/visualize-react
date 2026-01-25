@@ -94,32 +94,21 @@ const Modal = ({ isOpen, setIsOpen }) => {
                       body: new FormData(e.target),
                     });
 
-                    if (response.ok) {
-                      if (typeof window !== 'undefined' && window.op) {
-                        window.op('track', 'form_submitted', {
-                          form_name: 'email_capture',
-                          form_type: 'exit_intent_modal',
-                          status: 'success'
-                        });
-                      }
-                      // Redirect the subscriber
-                      var link = document.createElement("a");
-                      link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
-                      link.download = "file.pdf";
-                      link.dispatchEvent(new MouseEvent("click"));
-                      setIsOpen(false);
-                    } else {
-                      if (typeof window !== 'undefined' && window.op) {
-                        window.op('track', 'form_submitted', {
-                          form_name: 'email_capture',
-                          form_type: 'exit_intent_modal',
-                          status: 'error',
-                          error_code: response.status
-                        });
-                      }
-                      // Something went wrong subscribing the user
-                      alert("Sorry, we couldn't subscribe you.");
+
+                    if (typeof window !== 'undefined' && window.op) {
+                      window.op('track', 'form_submitted', {
+                        form_name: 'email_capture',
+                        form_type: 'exit_intent_modal',
+                        status: 'success'
+                      });
                     }
+                    // Redirect the subscriber
+                    var link = document.createElement("a");
+                    link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
+                    link.download = "file.pdf";
+                    link.dispatchEvent(new MouseEvent("click"));
+                    setIsOpen(false);
+
                   } catch (error) {
                     if (typeof window !== 'undefined' && window.op) {
                       window.op('track', 'form_submitted', {
@@ -129,7 +118,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
                         error_type: 'network'
                       });
                     }
-                    alert("Sorry, there was an issue: " + error);
+                    // alert("Sorry, there was an issue: " + error);
                   } finally {
                     setLoading(false);
                   }
@@ -181,7 +170,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
           </Transition.Child>
         </div>
       </Dialog>
-    </Transition>
+    </Transition >
   );
 };
 
