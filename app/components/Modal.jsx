@@ -95,6 +95,13 @@ const Modal = ({ isOpen, setIsOpen }) => {
                     });
 
                     if (response.ok) {
+                      if (typeof window !== 'undefined' && window.op) {
+                        window.op('track', 'form_submitted', {
+                          form_name: 'email_capture',
+                          form_type: 'exit_intent_modal',
+                          status: 'success'
+                        });
+                      }
                       // Redirect the subscriber
                       var link = document.createElement("a");
                       link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
@@ -102,10 +109,26 @@ const Modal = ({ isOpen, setIsOpen }) => {
                       link.dispatchEvent(new MouseEvent("click"));
                       setIsOpen(false);
                     } else {
+                      if (typeof window !== 'undefined' && window.op) {
+                        window.op('track', 'form_submitted', {
+                          form_name: 'email_capture',
+                          form_type: 'exit_intent_modal',
+                          status: 'error',
+                          error_code: response.status
+                        });
+                      }
                       // Something went wrong subscribing the user
                       alert("Sorry, we couldn't subscribe you.");
                     }
                   } catch (error) {
+                    if (typeof window !== 'undefined' && window.op) {
+                      window.op('track', 'form_submitted', {
+                        form_name: 'email_capture',
+                        form_type: 'exit_intent_modal',
+                        status: 'error',
+                        error_type: 'network'
+                      });
+                    }
                     alert("Sorry, there was an issue: " + error);
                   } finally {
                     setLoading(false);
