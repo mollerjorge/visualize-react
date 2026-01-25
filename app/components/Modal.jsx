@@ -102,7 +102,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
                   link.download = "react-interview-questions-and-answers.pdf";
                   link.dispatchEvent(new MouseEvent("click"));
                   setIsOpen(false);
-                  setIsLoading(false);
+                  setLoading(false)
 
                   let response = await fetch(formUrl, {
                     method: "POST",
