@@ -99,7 +99,7 @@ const Modal = ({ isOpen, setIsOpen }) => {
                   // Redirect the subscriber
                   var link = document.createElement("a");
                   link.href = `${window.location.origin}/react-interview-questions-and-answers.pdf`;
-                  link.download = "file.pdf";
+                  link.download = "react-interview-questions-and-answers.pdf";
                   link.dispatchEvent(new MouseEvent("click"));
                   setIsOpen(false);
                   setIsLoading(false);
