@@ -28,10 +28,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Pageviews tracked automatically on route navigation
   4. Events visible in OpenPanel dashboard
   5. Existing Mixpanel and Vercel Analytics continue working
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD during planning
+- [ ] 01-01-PLAN.md - Initialize OpenPanel SDK, disable Mixpanel auto-pageview
 
 ### Phase 2: Click Event Tracking
 **Goal**: All user clicks tracked across site
@@ -66,10 +66,10 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3
+Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. SDK Integration | 0/TBD | Not started | - |
+| 1. SDK Integration | 0/1 | Ready | - |
 | 2. Click Event Tracking | 0/TBD | Not started | - |
 | 3. Form & Video Events | 0/TBD | Not started | - |
