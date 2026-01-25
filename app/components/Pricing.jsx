@@ -209,6 +209,8 @@ const Pricings = [
 ];
 
 export default function Pricing() {
+  const tierNames = ['infographics', 'video_course', 'bundle'];
+
   return (
     <div className="py-40 bg-body-1">
       <div className="">
@@ -310,6 +312,16 @@ export default function Pricing() {
                     mixpanel.track("Click", {
                       "Get it now": pricingName,
                     });
+                    if (typeof window !== 'undefined' && window.op) {
+                      window.op('track', 'pricing_cta_clicked', {
+                        pricing_tier: tierNames[index],
+                        tier_price: pricing.price,
+                        tier_position: index + 1,
+                        button_text: 'Get it now',
+                        location: 'pricing',
+                        discount_percentage: index === 2 ? '30%' : '50%'
+                      });
+                    }
                   }}
                   to={pricing.href}
                   primary
