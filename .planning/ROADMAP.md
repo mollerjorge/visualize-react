@@ -22,7 +22,7 @@ Add Lemon Squeezy webhook endpoint to capture order_created and subscription_cre
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md - Implement webhook route with HMAC verification and OpenPanel forwarding
+- [ ] 04-01-PLAN.md — Webhook route with HMAC verification + OpenPanel forwarding
 
 ## Progress
 
