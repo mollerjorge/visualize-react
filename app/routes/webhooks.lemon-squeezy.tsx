@@ -12,27 +12,27 @@ export async function action({ request }: ActionFunctionArgs) {
   const rawBody = await request.text();
 
   // Verify signature
-  const signature = request.headers.get("X-Signature");
-  if (!signature) {
-    return new Response("Missing signature", { status: 401 });
-  }
+  // const signature = request.headers.get("X-Signature");
+  // if (!signature) {
+  //   return new Response("Missing signature", { status: 401 });
+  // }
 
-  const secret = "george2106";
+  // const secret = "george2106";
 
-  const expectedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(rawBody)
-    .digest("hex");
+  // const expectedSignature = crypto
+  //   .createHmac("sha256", secret)
+  //   .update(rawBody)
+  //   .digest("hex");
 
-  const signatureBuffer = new Uint8Array(Buffer.from(signature, "utf-8"));
-  const expectedBuffer = new Uint8Array(Buffer.from(expectedSignature, "utf-8"));
+  // const signatureBuffer = new Uint8Array(Buffer.from(signature, "utf-8"));
+  // const expectedBuffer = new Uint8Array(Buffer.from(expectedSignature, "utf-8"));
 
-  if (
-    signatureBuffer.length !== expectedBuffer.length ||
-    !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
-  ) {
-    return new Response("Invalid signature", { status: 401 });
-  }
+  // if (
+  //   signatureBuffer.length !== expectedBuffer.length ||
+  //   !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+  // ) {
+  //   return new Response("Invalid signature", { status: 401 });
+  // }
 
   // Parse payload
   let payload;
@@ -66,8 +66,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
   // Send to OpenPanel (return 200 even if this fails)
   try {
-    const clientId = "c1eb2b83-2218-46cd-907b-ce5681c8ad76";
-    const clientSecret = process.env.OPENPANEL_CLIENT_SECRET;
+    const clientId = "c3bfa7c1-eba6-48fa-b561-d18db7f4e858";
+    const clientSecret = "sec_96e74501a465b4e5cfc2";
 
     if (clientSecret) {
       await fetch("https://api.openpanel.dev/track", {
