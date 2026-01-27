@@ -41,19 +41,19 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HOOK-01 | TBD | Pending |
-| HOOK-02 | TBD | Pending |
-| HOOK-03 | TBD | Pending |
-| HOOK-04 | TBD | Pending |
-| HOOK-05 | TBD | Pending |
-| HOOK-06 | TBD | Pending |
-| HOOK-07 | TBD | Pending |
-| HOOK-08 | TBD | Pending |
-| HOOK-09 | TBD | Pending |
-| HOOK-10 | TBD | Pending |
-| HOOK-11 | TBD | Pending |
+| HOOK-01 | Phase 4 | Pending |
+| HOOK-02 | Phase 4 | Pending |
+| HOOK-03 | Phase 4 | Pending |
+| HOOK-04 | Phase 4 | Pending |
+| HOOK-05 | Phase 4 | Pending |
+| HOOK-06 | Phase 4 | Pending |
+| HOOK-07 | Phase 4 | Pending |
+| HOOK-08 | Phase 4 | Pending |
+| HOOK-09 | Phase 4 | Pending |
+| HOOK-10 | Phase 4 | Pending |
+| HOOK-11 | Phase 4 | Pending |
 
-**Coverage:** 11/11 requirements (100% after roadmap)
+**Coverage:** 11/11 requirements (100%)
 
 ---
 *Requirements defined: 2026-01-27*

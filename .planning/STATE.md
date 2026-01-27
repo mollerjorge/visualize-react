@@ -1,68 +1,69 @@
-# Project State
+# Project State: Visualize React
+
+**Last updated:** 2026-01-27
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-27)
+**Core Value**: Track user journey from page visit to purchase — comprehensive analytics for conversion optimization
 
-**Core value:** Track user journey from page visit to purchase — comprehensive analytics for conversion optimization
-**Current focus:** Milestone v1.1 - Lemon Squeezy Webhooks (defining requirements)
+**Current Focus**: v1.1 Lemon Squeezy Webhooks - Track purchases in OpenPanel via Lemon Squeezy webhooks for conversion measurement
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-01-27 — Milestone v1.1 started
+**Milestone**: v1.1 Lemon Squeezy Webhooks
+**Phase**: 4 - Webhook Endpoint + OpenPanel Integration
+**Plan**: None active
+**Status**: Ready to plan
 
-Progress: [░░░░░░░░░░] 0%
+**Progress**:
+```
+[                    ] 0% (0/1 phases)
+```
 
 ## Performance Metrics
 
-**Velocity:**
+| Metric | Count |
+|--------|-------|
+| Phases completed | 0/1 |
+| Plans completed | 0/1 |
+| Requirements satisfied | 0/11 |
+
+**Recent velocity**: N/A (new milestone)
+
+**v1.0 metrics (reference)**:
 - Total plans completed: 3
 - Average duration: ~6 min
 - Total execution time: 0.32 hours
 
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-sdk-integration | 1 | ~15 min | ~15 min |
-| 02-click-event-tracking | 1 | ~3 min | ~3 min |
-| 03-form-video-events | 1 | ~1 min | ~1 min |
-
-**Recent Trend:**
-- Last 5 plans: 01-01 (~15 min), 02-01 (~3 min), 03-01 (~1 min)
-- Trend: Accelerating (93% faster overall)
-
-*Updated after each plan completion*
-
 ## Accumulated Context
 
-### Decisions
+### Key Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+| Decision | Date | Rationale |
+|----------|------|-----------|
+| Single phase for all HOOK-* requirements | 2026-01-27 | Small scope (11 requirements), cohesive implementation (webhook endpoint), no natural delivery boundaries |
+| Zero dependencies approach | 2026-01-27 | Node.js 18+ built-ins (crypto, fetch) sufficient, avoid unnecessary packages |
 
-- Localhost CORS requires domain whitelisting in OpenPanel dashboard (tested in prod instead)
-- Track form submissions AFTER fetch response, not on submit - prevents duplicate events from validation errors
-- Track all three video events: play (start), pause (with position), completed (full watch)
-- Use Math.round() for video timestamps to avoid decimal clutter in analytics
+### Current TODOs
 
-### Pending Todos
+- [ ] Plan Phase 4 (`/gsd:plan-phase 4`)
 
-None.
+### Active Blockers
 
-### Blockers/Concerns
-
-**From Research:**
-- ~~Duplicate event tracking risk~~ — Resolved: Mixpanel auto-pageview disabled
-- ~~Dev environment pollution~~ — Noted: Localhost needs whitelisting in OpenPanel
-- ~~Event naming consistency~~ — Resolved: Consistent schema established in 02-01 (nav_link_clicked, cta_clicked, pricing_cta_clicked)
-- Pre-existing typecheck failure with @react-spring/rafz types - does not block builds
+None
 
 ## Session Continuity
 
-Last session: 2026-01-25 20:02
-Stopped at: Phase 3 plan 03-01 completed - ALL PHASES COMPLETE
-Resume file: None
+**Next Session Should Know**:
+- Phases 1-3 completed in v1.0 milestone (OpenPanel client-side integration)
+- Phase 4 continues from v1.0 foundation
+- Research complete (SUMMARY.md) - implementation patterns validated
+- Environment requires 3 secrets: LEMON_SQUEEZY_WEBHOOK_SECRET, OPENPANEL_CLIENT_ID, OPENPANEL_CLIENT_SECRET
+
+**Critical Context**:
+- Must use request.text() for raw body (signature verification breaks with parsed JSON)
+- Must use crypto.timingSafeEqual() for signature comparison (prevents timing attacks)
+- Return 200 even if OpenPanel fails (prevents Lemon Squeezy retry storms)
+
+---
+*STATE.md tracks project memory across sessions*
