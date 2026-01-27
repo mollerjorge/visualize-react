@@ -1,327 +1,806 @@
-# Pitfalls Research
+# Webhook & Server-Side Analytics Pitfalls
 
-**Domain:** OpenPanel Analytics Integration (Third Analytics Source)
-**Researched:** 2026-01-25
+**Domain:** Lemon Squeezy Webhook Integration + OpenPanel Server-Side Tracking
+**Researched:** 2026-01-27
 **Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### Pitfall 1: SSR Hydration Mismatch from Client-Only SDK
+### Pitfall 1: Signature Verification with Parsed Body
 
 **What goes wrong:**
-OpenPanel SDK accesses browser-only APIs (window.op) during initialization, causing React hydration errors when rendered server-side. Manifests as "Text content does not match server-rendered HTML" warnings and visual glitches on first load.
+Webhook signature fails even for legitimate Lemon Squeezy requests. Error: "Invalid signature" on every webhook. Signature verification returns false despite correct secret. Webhooks never process successfully.
 
 **Why it happens:**
-Analytics SDKs rely on browser APIs unavailable during SSR. Developers add tracking initialization in components rendered server-side, creating mismatch between server HTML and client hydration.
+Remix automatically parses JSON body via `request.json()`. Signature is calculated from raw unparsed bytes. After JSON parsing, body is altered (whitespace removed, keys reordered). Computing signature from parsed body produces different hash than Lemon Squeezy sent.
 
-**How to avoid:**
-- Wrap OpenPanel initialization in ClientOnly boundary (remix-utils)
-- Initialize in useEffect (client-side only)
-- Use dynamic import with ssr: false if available
-- Keep tracking code in client-only entry points
+**Consequences:**
+- All webhooks rejected as invalid
+- Subscription updates never reach database
+- Payment confirmations lost
+- Manual reconciliation required
 
-**Warning signs:**
-- Hydration warnings in browser console
-- Flash of unstyled content on initial load
-- OpenPanel events not firing on first page load
-- "window is not defined" errors in build/SSR logs
+**Prevention:**
+```typescript
+// WRONG - Signature fails
+const body = await request.json();
+const signature = computeSignature(JSON.stringify(body)); // Altered
+
+// CORRECT - Use raw body
+const text = await request.text();
+const signature = computeSignature(text); // Original bytes
+const body = JSON.parse(text); // Parse after verification
+```
+
+**Detection:**
+- All webhook requests fail signature check
+- Works in testing with manual JSON but fails from Lemon Squeezy
+- Signature comparison shows different hashes for same payload
+- Lemon Squeezy dashboard shows failed delivery attempts
 
 **Phase to address:**
-Phase 1 (Setup/Installation) - SDK initialization must be client-only from start
+Webhook endpoint implementation - Must use `request.text()` before any parsing
 
 ---
 
-### Pitfall 2: Duplicate Event Tracking Across Three Providers
+### Pitfall 2: Non-Constant-Time Signature Comparison
 
 **What goes wrong:**
-Same user actions fire events to Mixpanel, Vercel Analytics, AND OpenPanel, inflating user counts and skewing metrics. Each provider counts same user as 3 separate MTUs, triple-billing your tracking budget. Data analysis becomes unreliable when comparing across providers.
+Webhook endpoint vulnerable to timing attacks. Attacker sends malicious payloads, measures response time variations, deduces secret one character at a time. After ~256 attempts per character, attacker reconstructs full signing secret and can forge webhooks.
 
 **Why it happens:**
-Each analytics SDK independently tracks page views and auto-events. Without coordination, initializing third provider automatically duplicates all automatic tracking. Developers add OpenPanel without auditing existing Mixpanel/Vercel auto-tracking.
+Using `===` or `==` for signature comparison exits early on first character mismatch. Longer match = longer execution time. Attacker measures this timing difference (microseconds) to infer correct characters.
 
-**How to avoid:**
-- Disable auto page view tracking on at least one provider
-- Document which provider tracks what (tracking plan)
-- Use single wrapper function that routes events selectively
-- Mixpanel: set `track_pageview: false` in init config
-- OpenPanel: disable auto-tracking, only manual events
-- Vercel Analytics: keep as-is (lightweight)
+**Consequences:**
+- Signing secret leaked via timing side-channel
+- Attacker can forge webhooks
+- Malicious subscription updates injected
+- Data corruption from fake payment events
 
-**Warning signs:**
-- Event counts 2-3x higher after OpenPanel integration
-- MTU billing jumps unexpectedly
-- Same session ID appears across multiple providers
-- Page view metrics don't match between analytics dashboards
+**Prevention:**
+```typescript
+import crypto from 'crypto';
+
+// WRONG - Timing attack vulnerable
+if (receivedSignature === computedSignature) { ... }
+
+// CORRECT - Constant-time comparison
+const receivedBuffer = Buffer.from(receivedSignature, 'hex');
+const computedBuffer = Buffer.from(computedSignature, 'hex');
+if (crypto.timingSafeEqual(receivedBuffer, computedBuffer)) { ... }
+```
+
+**Detection:**
+- Security audit flags non-constant-time comparisons
+- Code review identifies `===` for secret comparison
+- No use of `crypto.timingSafeEqual` in signature check
 
 **Phase to address:**
-Phase 2 (Configuration) - Establish tracking plan before sending events
+Signature verification implementation - Use `crypto.timingSafeEqual()` from start
 
 ---
 
-### Pitfall 3: Inconsistent Event Naming Across Providers
+### Pitfall 3: Missing Idempotency - Duplicate Processing
 
 **What goes wrong:**
-Mixpanel uses "Sign up", OpenPanel uses "signup", custom code uses "user_signed_up". Impossible to correlate events across providers or create unified analytics view. Data analysis requires manual mapping, causing errors and wasted engineering time.
+Lemon Squeezy retries webhook after timeout. Endpoint processes same event twice. User subscription activated, database updated, OpenPanel event sent. Retry arrives 5 seconds later. Same operations run again. Duplicate OpenPanel events inflate analytics. If billing logic runs twice, user charged twice.
 
 **Why it happens:**
-Each analytics provider has different naming conventions. Mixpanel prefers Title Case with spaces, many others use snake_case or camelCase. No shared tracking plan when adding third provider. Different developers implement tracking at different times.
+Lemon Squeezy guarantees "at least once" delivery. Network issues, slow responses, or temporary failures trigger automatic retries (up to 4 attempts). No idempotency key checking means same event processes multiple times.
 
-**How to avoid:**
-- Create shared event naming schema BEFORE integration
-- Use single abstraction layer for all analytics calls
-- Document event names in tracking plan
-- Add TypeScript types for valid event names
-- Use constants/enums instead of string literals
+**Consequences:**
+- Duplicate analytics events (inflated metrics)
+- Duplicate email notifications
+- Race conditions in database updates
+- Potential duplicate charges/credits
+- Data integrity violations
 
-**Warning signs:**
-- "Similar" events with different names in dashboards
-- Team debates which metric is "correct"
-- Cannot build cross-provider funnels
-- New events added without checking existing names
+**Prevention:**
+```typescript
+// Create unique constraint
+// schema.prisma: @@unique([webhookId])
+
+async function handleWebhook(eventId: string, payload: any) {
+  try {
+    // Attempt insert - fails if duplicate
+    await db.processedWebhooks.create({
+      data: { webhookId: eventId, processedAt: new Date() }
+    });
+  } catch (error) {
+    if (error.code === 'P2002') { // Unique constraint violation
+      return; // Already processed, skip silently
+    }
+    throw error;
+  }
+
+  // Process event only if insert succeeded
+  await processSubscription(payload);
+  await trackToOpenPanel(payload);
+}
+```
+
+**Detection:**
+- Duplicate events in OpenPanel dashboard
+- Same subscription event appears twice in logs
+- Database shows duplicate timestamps for single webhook
+- User reports receiving multiple emails for one action
 
 **Phase to address:**
-Phase 2 (Configuration) - Define naming schema before sending events
+Webhook handler implementation - Add idempotency tracking before processing logic
 
 ---
 
-### Pitfall 4: Breaking Existing Mixpanel/Vercel Analytics
+### Pitfall 4: Synchronous Processing Causes Timeouts
 
 **What goes wrong:**
-OpenPanel installation overwrites Mixpanel initialization, breaks Vercel Analytics component mounting, or conflicts with mixpanel.init() timing. Existing dashboards show data gaps or errors after OpenPanel deployment.
+Webhook handler updates database, sends OpenPanel event, triggers email, checks external API. Takes 8 seconds total. Lemon Squeezy times out after 30 seconds on first try, but processing delays response. Lemon Squeezy sees slow response, retries webhook. Handler still processing first request. Now two handlers run concurrently, causing race conditions.
 
 **Why it happens:**
-Multiple analytics SDKs compete for same browser APIs, initialization timing conflicts, or shared state. Adding script tags in wrong order or wrapping components incorrectly breaks existing setup.
+Webhook handlers do all processing synchronously before responding. Long operations (external API calls, email sending, complex DB queries) delay HTTP 200 response. Providers expect quick ACK (< 1-2 seconds).
 
-**How to avoid:**
-- Test in isolated branch with both old and new analytics
-- Verify Mixpanel still tracks after OpenPanel init
-- Check Vercel Analytics component still renders
-- Initialize providers in sequence, not parallel
-- Use separate React components for each provider
+**Consequences:**
+- Unnecessary retries due to slow responses
+- Race conditions from concurrent processing
+- Timeout triggers even when processing succeeds
+- Increased load from retry storms
+- Provider may disable endpoint after repeated "failures"
 
-**Warning signs:**
-- Mixpanel dashboard shows data gap after deploy
-- Vercel Analytics stops reporting
-- Browser console errors about analytics init
-- "mixpanel.track is not a function" errors
+**Prevention:**
+```typescript
+// WRONG - Synchronous processing
+export async function action({ request }: ActionFunctionArgs) {
+  const payload = await verifyWebhook(request);
+  await db.subscription.update(...);        // 2 seconds
+  await sendEmail(payload);                 // 3 seconds
+  await trackToOpenPanel(payload);          // 1 second
+  await syncToBackoffice(payload);          // 2 seconds
+  return json({ ok: true });                // 8 seconds total!
+}
+
+// CORRECT - Queue for background processing
+export async function action({ request }: ActionFunctionArgs) {
+  const payload = await verifyWebhook(request);
+
+  // Store for processing, respond immediately
+  await db.webhookQueue.create({
+    data: { payload, status: 'pending' }
+  });
+
+  return json({ ok: true }, { status: 200 }); // < 100ms
+}
+// Separate worker processes queue
+```
+
+**Detection:**
+- Webhook responses take > 2 seconds
+- Lemon Squeezy shows "timeout" in delivery logs despite success
+- Multiple processing logs for same event ID
+- Database shows concurrent updates from same webhook
 
 **Phase to address:**
-Phase 3 (Integration Testing) - Verify all providers work together before production
+Architecture design - Decide sync vs async before implementation
 
 ---
 
-### Pitfall 5: Performance Degradation from Three Tracking Scripts
+### Pitfall 5: Wrong HTTP Status Codes
 
 **What goes wrong:**
-Adding third analytics provider increases bundle size by 30-50KB+, slows page load by 100-200ms, and competes for network/CPU resources. Amazon research shows every 100ms costs 1% revenue. Three tracking scripts can easily add 300ms+ to load time.
+Webhook validates successfully, database update fails due to transient error. Handler returns 500 error. Lemon Squeezy retries. Database error persists. After 4 attempts, webhook marked as permanently failed. Now subscription update lost, requires manual fix.
+
+Alternate scenario: Signature validation fails (attacker). Handler returns 200 to "avoid retries". Lemon Squeezy thinks delivery succeeded. Attacker continues sending invalid webhooks.
 
 **Why it happens:**
-Each analytics SDK is full-featured library (15-50KB). Median website has 20 external scripts totaling 449KB. Adding third provider crosses performance threshold where users notice slowness. Scripts compete for initialization priority.
+Misunderstanding of what status codes signal to webhook provider. 2xx = success, don't retry. 4xx = client error, don't retry. 5xx = server error, retry. Using wrong code for error type breaks retry logic.
 
-**How to avoid:**
-- Lazy load OpenPanel (not critical for UX)
-- Use defer/async script attributes
-- Monitor Core Web Vitals before/after
-- Consider server-side tracking for OpenPanel
-- Load analytics after critical content renders
+**Consequences:**
+- Legitimate events permanently lost (wrong 4xx/5xx)
+- Invalid events not filtered (wrong 2xx)
+- Retry storms from wrong 5xx
+- Manual intervention required for lost events
 
-**Warning signs:**
-- Lighthouse performance score drops >5 points
-- Time to Interactive (TTI) increases significantly
-- First Contentful Paint (FCP) slows down
-- Bundle size analysis shows 3 full analytics libs
+**Prevention:**
+```typescript
+// Status code decision tree
+if (!signatureValid) {
+  return json({ error: 'Invalid signature' }, { status: 401 }); // Don't retry
+}
+
+if (eventAlreadyProcessed) {
+  return json({ ok: true }, { status: 200 }); // Already done, success
+}
+
+try {
+  await processEvent(payload);
+  return json({ ok: true }, { status: 200 }); // Success
+} catch (error) {
+  if (error.code === 'ECONNREFUSED') {
+    // Transient - retry might succeed
+    return json({ error: 'DB unavailable' }, { status: 503 });
+  }
+  if (error.message.includes('Invalid data')) {
+    // Permanent - retry won't fix
+    return json({ error: 'Bad data' }, { status: 422 });
+  }
+  throw error; // Let Remix return 500
+}
+```
+
+**Detection:**
+- Legitimate webhooks marked as permanently failed
+- Invalid webhooks show "successful delivery"
+- Retry storms visible in server logs
+- Mismatch between Lemon Squeezy status and actual processing
 
 **Phase to address:**
-Phase 4 (Performance Optimization) - After integration, before production rollout
+Error handling implementation - Map error types to correct status codes
 
 ---
 
-### Pitfall 6: GDPR/Privacy Consent Not Unified
+### Pitfall 6: Exposed Webhook Secrets
 
 **What goes wrong:**
-Mixpanel respects consent banner, but OpenPanel tracks before consent given. GDPR violation with potential fines. Different consent requirements per provider create confusing UX. Users think they opted out but still tracked by newest provider.
+Webhook signing secret committed to Git in `.env.example` or hardcoded in route file. Secret visible in GitHub public repo. Attacker finds secret, forges webhooks with valid signatures. Malicious subscription updates injected. All signature verification bypassed.
 
 **Why it happens:**
-Adding third provider without updating consent management platform (CMP). OpenPanel defaults to cookieless but still processes personal data under GDPR. Developers assume cookieless = GDPR compliant (wrong). Each provider has different consent API.
+Developer creates `.env` file with real secrets, commits it. Or hardcodes secret "temporarily" for testing. Or includes real secret in `.env.example` as "documentation". Secret management seen as "later" task.
 
-**How to avoid:**
-- Update CMP config to include OpenPanel
-- Block OpenPanel init until consent given
-- Use same consent check for all providers
-- Test opt-out flow for all three providers
-- Document which provider requires which consent type
+**Consequences:**
+- Webhook endpoint completely compromised
+- Attacker can forge any subscription event
+- No way to distinguish real from fake webhooks
+- Requires secret rotation and re-deployment
+- Potential data breach or financial loss
 
-**Warning signs:**
-- OpenPanel tracks before consent banner interaction
-- Privacy policy doesn't mention OpenPanel
-- Different opt-out mechanisms per provider
-- Network requests to OpenPanel before consent
+**Prevention:**
+```typescript
+// WRONG - Hardcoded
+const WEBHOOK_SECRET = 'whsec_abc123...';
+
+// WRONG - Committed .env
+// .env: LEMONSQUEEZY_WEBHOOK_SECRET=whsec_abc123...
+
+// CORRECT - Environment variable, excluded from Git
+const WEBHOOK_SECRET = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
+if (!WEBHOOK_SECRET) {
+  throw new Error('LEMONSQUEEZY_WEBHOOK_SECRET not configured');
+}
+
+// .gitignore
+.env
+.env.local
+
+// .env.example (NO real secrets)
+LEMONSQUEEZY_WEBHOOK_SECRET=your_secret_here
+```
+
+**Detection:**
+- `.env` files tracked in Git
+- Secret visible in commit history
+- Hardcoded strings matching webhook secret format
+- No environment variable validation on startup
 
 **Phase to address:**
-Phase 2 (Configuration) - Before sending any production traffic
+Setup phase - Configure environment variables before writing webhook code
 
 ---
 
-### Pitfall 7: No Tracking Plan Causes Schema Drift
+### Pitfall 7: Missing OpenPanel Server-Side Authentication
 
 **What goes wrong:**
-After 3 months, events are named inconsistently, properties are missing or duplicated, and no one knows what each event means. Team creates duplicate events because they don't know existing ones exist. Analytics becomes unusable, requiring expensive cleanup.
+OpenPanel server-side tracking sends events without `openpanel-client-id` or `openpanel-client-secret` headers. API returns 401 Unauthorized. All events silently fail. Webhook processes successfully but analytics never updated. Metrics dashboards missing subscription events.
 
 **Why it happens:**
-No documentation of what to track and how. Different developers add events over time. No owner for tracking plan. No review process for new events. Copy-paste code from different providers creates inconsistency.
+Developer assumes server-side tracking works like client SDK (automatic auth). Server-side API requires explicit authentication headers. Copy-pasted client-side tracking code doesn't include headers. Environment variables not configured for server context.
 
-**How to avoid:**
-- Create tracking plan document BEFORE integration
-- Define owner responsible for tracking plan
-- Require review before adding new events
-- Use TypeScript types to enforce schema
-- Regular audits of implemented vs planned tracking
+**Consequences:**
+- All server-side events lost
+- No analytics for webhook-triggered actions
+- Incomplete funnel tracking
+- Silent failures (no visible errors)
+- Metrics gaps not noticed until later
 
-**Warning signs:**
-- Similar events with slightly different names
-- Same property tracked as different data types
-- Team can't agree on metric definitions
-- Events tracked in some providers but not others
+**Prevention:**
+```typescript
+// WRONG - Missing authentication
+await fetch('https://api.openpanel.dev/track', {
+  method: 'POST',
+  body: JSON.stringify({ event: 'subscription_created', ... })
+});
+
+// CORRECT - Include auth headers
+const OPENPANEL_CLIENT_ID = process.env.OPENPANEL_CLIENT_ID;
+const OPENPANEL_CLIENT_SECRET = process.env.OPENPANEL_CLIENT_SECRET;
+
+if (!OPENPANEL_CLIENT_ID || !OPENPANEL_CLIENT_SECRET) {
+  throw new Error('OpenPanel credentials not configured');
+}
+
+await fetch('https://api.openpanel.dev/track', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'openpanel-client-id': OPENPANEL_CLIENT_ID,
+    'openpanel-client-secret': OPENPANEL_CLIENT_SECRET,
+  },
+  body: JSON.stringify({ event: 'subscription_created', ... })
+});
+```
+
+**Detection:**
+- OpenPanel dashboard shows no server-side events
+- Webhook logs show 401 responses from OpenPanel
+- Client-side events present but server-side missing
+- Environment variables not set in deployment config
 
 **Phase to address:**
-Phase 2 (Configuration) - Create before any event implementation
+OpenPanel integration - Configure credentials before sending first event
 
 ---
 
-### Pitfall 8: Dev Environment Pollutes Production Analytics
+### Pitfall 8: Rate Limiting Without Backoff
 
 **What goes wrong:**
-Local development and staging environments send events to production OpenPanel project, inflating metrics with test data. Production dashboards show fake users from localhost and test accounts. MTU billing includes dev traffic.
+Webhook handler sends OpenPanel event for each subscription update. During promotion, 100 users subscribe in 1 minute. Handler sends 100 API requests to OpenPanel. OpenPanel rate limit exceeded. Returns 429 Too Many Requests. Handler doesn't retry. 80 subscription events lost from analytics.
 
 **Why it happens:**
-Mixpanel already configured with debug mode in production code (line 19: `debug: true`). Developers copy pattern for OpenPanel without environment checks. Single project ID used for all environments to "simplify" setup.
+No retry logic for rate-limited requests. No exponential backoff. No queue for batching. Treating OpenPanel API like database (no rate limits). Spike traffic not anticipated.
 
-**How to avoid:**
-- Use separate OpenPanel project for dev/staging/prod
-- Add environment check before analytics init
-- Turn off Mixpanel debug in production
-- Document environment-specific config
-- Use env vars for analytics keys
+**Consequences:**
+- Event data loss during traffic spikes
+- Incomplete analytics during critical periods (launches, promotions)
+- Cascading failures (retry storm makes problem worse)
+- No visibility into what events were lost
 
-**Warning signs:**
-- Events from localhost in production dashboards
-- MTU count includes test accounts
-- Debug logs in production browser console
-- Same project ID across all environments
+**Prevention:**
+```typescript
+async function trackToOpenPanel(event: any, attempt = 1) {
+  const response = await fetch('https://api.openpanel.dev/track', {
+    method: 'POST',
+    headers: { /* auth headers */ },
+    body: JSON.stringify(event)
+  });
+
+  if (response.status === 429) {
+    if (attempt > 3) {
+      // Give up after 3 attempts, queue for later
+      await db.failedEvents.create({ data: event });
+      return;
+    }
+
+    // Exponential backoff with jitter
+    const backoffMs = (2 ** attempt) * 1000 + Math.random() * 1000;
+    await new Promise(resolve => setTimeout(resolve, backoffMs));
+    return trackToOpenPanel(event, attempt + 1);
+  }
+
+  if (!response.ok) {
+    throw new Error(`OpenPanel error: ${response.status}`);
+  }
+}
+```
+
+**Detection:**
+- 429 errors in logs during traffic spikes
+- Analytics gaps during high-volume periods
+- No retry attempts visible in logs
+- Event counts don't match webhook counts
 
 **Phase to address:**
-Phase 1 (Setup) - Configure environment separation from start
+Error handling implementation - Add retry logic for all external API calls
+
+---
+
+### Pitfall 9: Missing Geo/Device Context
+
+**What goes wrong:**
+Webhook handler sends OpenPanel events without `x-client-ip` or `user-agent` headers. OpenPanel stores events but without location or device data. All events show "Unknown" location. Analytics reports can't segment by geography or device. Metrics less actionable.
+
+**Why it happens:**
+Server-side context doesn't have browser data automatically. Developer doesn't realize OpenPanel needs explicit headers for geo/device tracking. Copy-pasted minimal example that works but loses context.
+
+**Consequences:**
+- No geographic segmentation
+- No device/browser analytics
+- Reports show "Unknown" for most dimensions
+- Less actionable insights
+- Harder to debug user-specific issues
+
+**Prevention:**
+```typescript
+// Webhook context doesn't have user IP/agent directly
+// But can pass through from original user session if stored
+
+// Store during checkout session creation
+await db.checkoutSession.create({
+  data: {
+    userId,
+    userIp: request.headers.get('x-forwarded-for') || 'unknown',
+    userAgent: request.headers.get('user-agent') || 'unknown'
+  }
+});
+
+// Use in webhook handler
+const session = await db.checkoutSession.findUnique({ where: { userId } });
+
+await fetch('https://api.openpanel.dev/track', {
+  headers: {
+    'openpanel-client-id': CLIENT_ID,
+    'openpanel-client-secret': CLIENT_SECRET,
+    'x-client-ip': session?.userIp || 'unknown',
+    'user-agent': session?.userAgent || 'unknown',
+  },
+  body: JSON.stringify(event)
+});
+```
+
+**Detection:**
+- OpenPanel events show "Unknown" location
+- No device breakdown in reports
+- All server-side events missing geographic data
+- Headers not included in tracking calls
+
+**Phase to address:**
+Analytics integration - Plan context capture before implementation
+
+---
+
+### Pitfall 10: Webhook Secret Scope Confusion
+
+**What goes wrong:**
+Developer creates one webhook secret in Lemon Squeezy dashboard, uses it for all environments (dev, staging, production). Dev webhook fires, sent to production endpoint. Signature validates (same secret). Production database updated with test data. Test subscriptions pollute production analytics.
+
+Alternate: Uses different secrets per environment but hardcodes production secret in code "temporarily". Secret leaked via dev environment logs.
+
+**Why it happens:**
+Lemon Squeezy requires manually created signing secret (unlike Stripe's auto-generated per-endpoint). Developer uses single secret to "simplify" setup. Or separate secrets exist but configuration mixes them up.
+
+**Consequences:**
+- Test data in production database/analytics
+- Production secret exposed in dev logs
+- Unable to distinguish test vs real webhooks
+- Inflated metrics from test traffic
+
+**Prevention:**
+```typescript
+// Separate secrets per environment
+// Production: whsec_prod_abc123...
+// Staging: whsec_stag_xyz789...
+// Dev: whsec_dev_def456...
+
+// Environment-specific config
+const WEBHOOK_SECRET = process.env.NODE_ENV === 'production'
+  ? process.env.LEMONSQUEEZY_WEBHOOK_SECRET_PROD
+  : process.env.LEMONSQUEEZY_WEBHOOK_SECRET_DEV;
+
+// Lemon Squeezy dashboard: Create 3 webhooks
+// 1. https://app.example.com/api/webhook (prod secret)
+// 2. https://staging.example.com/api/webhook (staging secret)
+// 3. https://dev.example.com/api/webhook (dev secret)
+```
+
+**Detection:**
+- Test subscription events in production database
+- Same webhook secret across all environments
+- Production analytics includes localhost events
+- Unable to filter test vs real traffic
+
+**Phase to address:**
+Setup phase - Configure separate secrets before exposing endpoints
+
+---
+
+## Moderate Pitfalls
+
+### Pitfall 11: Event Replay Attacks
+
+**What goes wrong:**
+Attacker intercepts valid webhook (HTTPS but logged), replays same request later. Signature still valid. Handler processes "new" subscription that actually happened weeks ago. Duplicate processing or stale data applied.
+
+**Prevention:**
+- Include timestamp validation (reject requests > 5 minutes old)
+- Store processed event IDs with TTL (idempotency)
+- Check event sequence numbers if available
+
+**Detection:**
+- Duplicate events days/weeks apart
+- Same signature accepted multiple times
+- No timestamp validation in code
+
+---
+
+### Pitfall 12: No HTTPS Enforcement
+
+**What goes wrong:**
+Webhook endpoint accepts HTTP requests. Attacker performs MITM, intercepts webhook, steals signing secret from legitimate request. Uses secret to forge future webhooks.
+
+**Prevention:**
+```typescript
+// Reject non-HTTPS in production
+if (process.env.NODE_ENV === 'production' &&
+    request.headers.get('x-forwarded-proto') !== 'https') {
+  return json({ error: 'HTTPS required' }, { status: 403 });
+}
+```
+
+**Detection:**
+- Webhook endpoint accessible via HTTP
+- No HTTPS redirect configured
+- Missing protocol check in handler
+
+---
+
+### Pitfall 13: Insufficient Error Context
+
+**What goes wrong:**
+Webhook fails, logs show "Error processing webhook". No event ID, no error details, no payload snippet. Impossible to debug or reproduce. Can't identify which user affected or what triggered failure.
+
+**Prevention:**
+```typescript
+try {
+  await processWebhook(payload);
+} catch (error) {
+  console.error('Webhook processing failed', {
+    eventId: payload.meta.event_id,
+    eventName: payload.meta.event_name,
+    userId: payload.data.attributes.user_id,
+    error: error.message,
+    stack: error.stack
+  });
+  // Still return 500 to trigger retry
+  throw error;
+}
+```
+
+**Detection:**
+- Generic error messages in logs
+- Unable to identify affected users
+- No payload context in error logs
+- Difficult to reproduce issues
+
+---
+
+### Pitfall 14: Hardcoded Event Names
+
+**What goes wrong:**
+Tracking code uses string literals: `trackEvent('subscription_created')`. Another file uses `trackEvent('subscription-created')`. Analytics shows two different events for same action. Reports inconsistent. No type safety.
+
+**Prevention:**
+```typescript
+// constants/events.ts
+export const EVENTS = {
+  SUBSCRIPTION_CREATED: 'subscription_created',
+  SUBSCRIPTION_UPDATED: 'subscription_updated',
+  SUBSCRIPTION_CANCELLED: 'subscription_cancelled',
+} as const;
+
+// Usage
+trackToOpenPanel({ event: EVENTS.SUBSCRIPTION_CREATED, ... });
+```
+
+**Detection:**
+- Multiple similar event names in analytics
+- String literals scattered across codebase
+- No shared event name constants
+- TypeScript allows any string
+
+---
+
+### Pitfall 15: No Webhook Testing Strategy
+
+**What goes wrong:**
+Developer builds webhook handler, deploys to production, hopes it works. First real webhook fails. No way to test signature verification without real webhook. Can't reproduce issues locally.
+
+**Prevention:**
+- Use Lemon Squeezy webhook testing endpoint
+- Store sample payloads from docs
+- Create unit tests with real signatures
+- Set up ngrok/localtunnel for local testing
+- Add manual retry endpoint for failed webhooks
+
+**Detection:**
+- No test coverage for webhook handler
+- No sample payloads in codebase
+- First production webhook is first test
+- No local testing setup documented
+
+---
 
 ## Technical Debt Patterns
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Using dynamic event names | Flexible, less code | Unbounded event namespace, unanalyzable data | Never - always use constants |
-| Skipping tracking plan docs | Ship faster | Schema drift, duplicate events, unusable analytics | Never - tracking plan is foundation |
-| Single wrapper for all providers | Clean abstraction | Limits provider-specific features | MVP only, refactor by Phase 3 |
-| Auto-tracking everything | No manual instrumentation | Duplicate events, unclear semantics | Initial setup only, disable after audit |
-| Client-only tracking | Simple implementation | Missing server-side actions (webhooks, cron) | Acceptable for marketing site |
-| Hardcoded analytics keys | No env var setup | Can't use different projects per env | Local dev only, never commit |
+| Synchronous processing in webhook | Simpler code | Timeouts, retries, race conditions | Never - always queue |
+| String comparison for signatures | Works functionally | Timing attack vulnerability | Never - use timingSafeEqual |
+| No idempotency tracking | Less database setup | Duplicate processing, data corruption | Never - retries guaranteed |
+| Hardcoded webhook secret | Faster initial setup | Secret exposure, can't rotate | Never - use env vars from start |
+| No retry logic for OpenPanel | Simpler error handling | Lost events during spikes | Initial MVP only |
+| Single webhook secret all envs | Easier management | Test data in production | Never - separate always |
+| Return 200 for invalid signatures | "Avoid retries" | Security bypass, no filtering | Never - return 401 |
+| No timestamp validation | Simpler verification | Replay attack vulnerability | Low-risk webhooks only |
 
 ## Integration Gotchas
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| OpenPanel + Remix | Initialize in route component (SSR) | Initialize in useEffect or ClientOnly wrapper |
-| OpenPanel + Mixpanel | Both track page views automatically | Disable one provider's auto-tracking |
-| Multiple providers | Each has own wrapper function | Single abstraction with provider routing |
-| Script tags | Load in wrong order causes conflicts | Load in sequence: Mixpanel → Vercel → OpenPanel |
-| Consent banner | Only checks for Mixpanel | Check for any analytics provider |
-| TypeScript | Use string literals for events | Create shared event name types |
+| Lemon Squeezy + Remix | Use `request.json()` before signature | Clone request, use `request.text()`, verify, then parse |
+| Signature verification | Use `===` comparison | Use `crypto.timingSafeEqual()` |
+| OpenPanel server-side | Missing auth headers | Include `openpanel-client-id` and `openpanel-client-secret` |
+| Rate limiting | No retry logic | Exponential backoff with jitter |
+| Idempotency | Check after processing | Check before processing, fail fast |
+| HTTP status codes | Return 500 for invalid signature | Return 401 (don't retry), 503 (retry), 200 (success) |
+| Environment secrets | Share secret across environments | Separate secret per environment |
+| Processing time | Synchronous operations block response | Queue for background processing |
 
-## Performance Traps
+## Response Timing Requirements
 
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Three full SDK bundles | 100KB+ total analytics code | Lazy load non-critical providers | >3 providers |
-| Synchronous initialization | Blocks page render | Use async/defer, init after hydration | First analytics provider |
-| All providers track same events | 3x network requests per action | Route events to relevant providers only | Third provider |
-| No bundle splitting | All analytics in main bundle | Dynamic imports for analytics | Marketing sites with low traffic |
-| Loading before critical CSS | Analytics delays visual content | Load analytics after FCP | Any provider added |
+| Provider | Timeout | Recommended ACK Time | Impact of Slow Response |
+|----------|---------|---------------------|-------------------------|
+| Lemon Squeezy | 30 seconds | < 2 seconds | Retry after 4 failed attempts (permanent failure) |
+| OpenPanel API | 30 seconds | < 5 seconds | 429 rate limit if too many concurrent |
+| General webhooks | 10-30 seconds | < 1 second | Retry storms, concurrent processing, race conditions |
 
-## Security Mistakes
+## Signature Verification Checklist
 
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Tracking PII in event properties | GDPR violation, data breach exposure | Audit event properties, use hashed IDs only |
-| Hardcoded API keys in client code | Key exposure in source, no rotation | Use env vars, public client keys only |
-| No consent management | GDPR fines, user trust damage | Implement CMP before analytics |
-| Same project for dev/prod | Test data in production, key leakage | Separate projects per environment |
-| Tracking sensitive actions | Privacy violations, compliance issues | Whitelist trackable events, default deny |
+- [ ] Use raw request body (`request.text()`) before any parsing
+- [ ] Clone request if need body twice (`request.clone()`)
+- [ ] Compute HMAC-SHA256 with signing secret
+- [ ] Use `crypto.timingSafeEqual()` for comparison (not `===`)
+- [ ] Return 401 for invalid signatures (don't retry)
+- [ ] Log failed attempts with event ID and signature comparison
+- [ ] Validate timestamp if provided (reject old requests)
+- [ ] Store signing secret in environment variable
+- [ ] Use separate secrets per environment
+- [ ] Never commit secrets to Git
 
-## UX Pitfalls
+## Idempotency Implementation Checklist
 
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| Analytics blocks page load | 200-300ms slower first load | Lazy load, defer until after critical render |
-| Multiple consent prompts | Confusion, abandon site | Single unified consent for all providers |
-| Analytics errors visible to users | Console spam, unprofessional | Wrap in try/catch, fail silently |
-| Tracking before consent | Privacy violation feeling | Block all analytics until consent |
-| Debug mode in production | Console spam distracts users | Environment-specific debug config |
+- [ ] Database table with unique constraint on event ID
+- [ ] Check idempotency BEFORE processing
+- [ ] Insert event ID as first database operation
+- [ ] Handle unique constraint violation gracefully (skip processing)
+- [ ] Return 200 for already-processed events
+- [ ] Include timestamp for debugging duplicate scenarios
+- [ ] Clean up old processed events (TTL or periodic cleanup)
+- [ ] Test with duplicate payloads
 
-## "Looks Done But Isn't" Checklist
+## OpenPanel Server-Side Checklist
 
-- [ ] **Event tracking:** Often missing environment separation — verify dev events don't pollute production
-- [ ] **GDPR compliance:** Often missing consent checks — verify all providers respect opt-out
-- [ ] **Performance:** Often missing lazy loading — verify analytics don't block critical render
-- [ ] **SSR compatibility:** Often missing client-only guards — verify no hydration errors
-- [ ] **Tracking plan:** Often missing documentation — verify team knows what/how to track
-- [ ] **Duplicate tracking:** Often missing auto-tracking audit — verify events fire only once
-- [ ] **Error handling:** Often missing try/catch wrappers — verify analytics errors don't break app
-- [ ] **Cross-provider naming:** Often missing schema alignment — verify consistent event names
+- [ ] Include `openpanel-client-id` header
+- [ ] Include `openpanel-client-secret` header
+- [ ] Include `Content-Type: application/json` header
+- [ ] Include `x-client-ip` header for geo tracking (if available)
+- [ ] Include `user-agent` header for device tracking (if available)
+- [ ] Use HTTPS endpoint (`https://api.openpanel.dev`)
+- [ ] Implement retry logic for 429 rate limits
+- [ ] Exponential backoff with jitter
+- [ ] Handle 401 errors (credential issue)
+- [ ] Store failed events for manual retry
+- [ ] Never expose credentials in client code
+- [ ] Validate response status codes
+- [ ] Log tracking failures with context
+
+## Error Handling Checklist
+
+- [ ] Return 200 only for successfully processed events
+- [ ] Return 401 for authentication failures (invalid signature)
+- [ ] Return 422 for invalid payload data (permanent error)
+- [ ] Return 503 for transient failures (database down, retry)
+- [ ] Return 500 for unexpected errors (retry)
+- [ ] Include error context in logs (event ID, user ID, error message)
+- [ ] Don't expose sensitive data in error responses
+- [ ] Track failed events for manual investigation
+- [ ] Alert on repeated failures (same error multiple times)
+- [ ] Implement dead letter queue for exhausted retries
+
+## Security Checklist
+
+- [ ] Webhook secret stored in environment variable
+- [ ] Webhook secret never committed to Git
+- [ ] Different secrets per environment
+- [ ] HTTPS enforced in production
+- [ ] Signature verification before processing
+- [ ] Timing-safe comparison for signatures
+- [ ] Timestamp validation (reject old requests)
+- [ ] Idempotency prevents replay attacks
+- [ ] No PII in event properties
+- [ ] OpenPanel credentials never exposed client-side
+- [ ] Rate limiting to prevent abuse
+- [ ] Error messages don't leak sensitive data
 
 ## Recovery Strategies
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Duplicate events inflated metrics | HIGH | Disable auto-tracking, audit event counts, explain data gap to stakeholders |
-| Inconsistent event naming | HIGH | Create tracking plan retroactively, migrate events over time, maintain mapping doc |
-| GDPR consent violation | CRITICAL | Immediately disable tracking, audit data collected, file DPO report if needed |
-| SSR hydration errors | LOW | Wrap in ClientOnly/useEffect, test in all routes |
-| Performance regression | MEDIUM | Add lazy loading, move to async init, consider removing provider |
-| Breaking existing analytics | MEDIUM | Rollback, test in isolation, fix conflicts, redeploy |
-| Dev data in production | MEDIUM | Delete polluted data, separate projects, add env checks |
-| No tracking plan | HIGH | Stop adding events, document existing schema, create plan |
+| Parsed body breaks signature | LOW | Use `request.text()`, redeploy, replay failed webhooks |
+| Timing attack vulnerability | MEDIUM | Switch to `timingSafeEqual()`, rotate secret, redeploy |
+| Missing idempotency | HIGH | Add tracking table, identify duplicates, deduplicate database |
+| Synchronous processing timeouts | MEDIUM | Add queue/background jobs, redeploy, replay failed webhooks |
+| Wrong status codes | MEDIUM | Fix status logic, redeploy, manually replay lost events |
+| Exposed webhook secret | CRITICAL | Rotate secret immediately, audit for forged webhooks, redeploy |
+| Missing OpenPanel auth | LOW | Add headers, redeploy, replay webhook events |
+| Rate limiting failures | MEDIUM | Add retry logic, implement queue, replay lost events |
+| Missing geo/device context | LOW | Update tracking calls, context lost for past events |
+| Secret scope confusion | HIGH | Separate secrets, clean test data from production |
 
-## Pitfall-to-Phase Mapping
+## Testing Strategy
 
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| SSR hydration mismatch | Phase 1 (Setup) | No console warnings, events fire on first load |
-| Duplicate event tracking | Phase 2 (Configuration) | Event counts stable after integration, single event per action |
-| Inconsistent event naming | Phase 2 (Configuration) | All providers use same event names from tracking plan |
-| Breaking existing analytics | Phase 3 (Integration Testing) | Mixpanel + Vercel dashboards show continuous data |
-| Performance degradation | Phase 4 (Performance) | Lighthouse score within 5 points, TTI <300ms increase |
-| GDPR consent conflicts | Phase 2 (Configuration) | All providers respect consent, no tracking before opt-in |
-| No tracking plan | Phase 2 (Configuration) | Document exists, team reviewed, owner assigned |
-| Dev environment pollution | Phase 1 (Setup) | Production dashboard shows no localhost events |
+### Unit Tests
+```typescript
+describe('Webhook signature verification', () => {
+  it('accepts valid signature', async () => {
+    const payload = '{"event":"subscription_created"}';
+    const signature = createSignature(payload, SECRET);
+    const valid = await verifySignature(payload, signature, SECRET);
+    expect(valid).toBe(true);
+  });
+
+  it('rejects invalid signature', async () => {
+    const payload = '{"event":"subscription_created"}';
+    const signature = 'invalid';
+    const valid = await verifySignature(payload, signature, SECRET);
+    expect(valid).toBe(false);
+  });
+
+  it('rejects modified payload', async () => {
+    const original = '{"event":"subscription_created"}';
+    const modified = '{"event":"subscription_cancelled"}';
+    const signature = createSignature(original, SECRET);
+    const valid = await verifySignature(modified, signature, SECRET);
+    expect(valid).toBe(false);
+  });
+});
+```
+
+### Integration Tests
+- Use Lemon Squeezy test mode webhooks
+- Store real webhook payloads as fixtures
+- Test idempotency with duplicate sends
+- Verify OpenPanel events with real API (separate test project)
+- Test error scenarios (invalid signature, rate limit, etc.)
+
+### Local Testing
+- Use ngrok/localtunnel to expose localhost
+- Configure Lemon Squeezy webhook to local URL
+- Monitor webhook delivery in Lemon Squeezy dashboard
+- Test signature verification with real payloads
+- Verify OpenPanel events in test project
 
 ## Sources
 
-- [GitHub - Openpanel-dev/openpanel](https://github.com/Openpanel-dev/openpanel)
-- [OpenPanel Documentation](https://openpanel.dev/docs)
-- [How We Implemented Event Analytics with OpenPanel | openstatus](https://www.openstatus.dev/blog/event-analytics-implementation)
-- [Developer Environments - Mixpanel Docs](https://docs.mixpanel.com/docs/tracking-best-practices/developer-environments)
-- [Product analytics implementation hiccups that are easy to spot | Mixpanel](https://mixpanel.com/blog/common-technical-hiccups-in-your-product-analytics-that-are-easy-to-spot/)
-- [Debugging: Validate your data and troubleshoot your implementation - Mixpanel Docs](https://docs.mixpanel.com/docs/tracking-best-practices/debugging)
-- [Create A Tracking Plan - Mixpanel Docs](https://docs.mixpanel.com/docs/tracking-best-practices/tracking-plan)
-- [Solve React hydration errors in Remix/Next apps](https://www.jacobparis.com/content/remix-hydration-errors)
-- [Understanding Hydration Errors by building a SSR React Project | PropelAuth](https://www.propelauth.com/post/understanding-hydration-errors)
-- [Is Google Analytics GDPR Compliant? [Checklist for Compliance] - CookieYes](https://www.cookieyes.com/blog/google-analytics-gdpr/)
-- [Analytics Tools and GDPR Consent - TermsFeed](https://www.termsfeed.com/blog/analytics-tools-gdpr-consent/)
-- [The Case for Limiting Analytics and Tracking Scripts](https://www.corewebvitals.io/pagespeed/the-case-for-limiting-analytics-and-tracking-scripts)
-- [Optimize loading third-parties](https://www.patterns.dev/vanilla/third-party/)
-- [Google Tag Manager & Google Analytics 4 Naming Conventions](https://measureschool.com/gtm-and-ga4-naming-conventions/)
-- [9 Common Event Tracking Mistakes (and How to Avoid Them) | Woopra](https://www.woopra.com/blog/event-tracking-mistakes)
-- [Naming conventions - Avo Docs](https://www.avo.app/docs/data-design/best-practices/naming-conventions)
-- [Clean Naming Conventions for Analytics | Twilio](https://segment.com/academy/collecting-data/naming-conventions-for-clean-data/)
-- [Duplicate Events in Google Analytics 4 and How to Fix them](https://www.analyticsmania.com/post/duplicate-events-in-google-analytics-4-and-how-to-fix-them/)
+**Lemon Squeezy Webhooks:**
+- [Guides: Sync With Webhooks • Lemon Squeezy](https://docs.lemonsqueezy.com/guides/developer-guide/webhooks)
+- [Docs: Webhook Requests • Lemon Squeezy](https://docs.lemonsqueezy.com/help/webhooks/webhook-requests)
+- [Debugging Invalid Webhook Signatures | Medium](https://sachinmittal98.medium.com/debugging-invalid-webhook-signatures-9e92017ea548)
+
+**Webhook Security:**
+- [The Webhook Trap: Securing the "Reverse" API Entry Point | Medium](https://medium.com/@instatunnel/the-webhook-trap-securing-the-reverse-api-entry-point-1f95b89aa63e)
+- [Common Webhook Signatures Failure Modes | Svix Blog](https://www.svix.com/blog/common-failure-modes-for-webhook-signatures/)
+- [Webhook Security Vulnerabilities Guide | Hookdeck](https://hookdeck.com/webhooks/guides/webhook-security-vulnerabilities-guide)
+
+**Remix Webhooks:**
+- [Resource Routes | Remix](https://remix.run/docs/en/main/guides/resource-routes)
+- [Handle Stripe webhooks in Remix | GitHub Gist](https://gist.github.com/cjavilla-stripe/241682c549292bc21165744401d38793)
+- [How do I implement HMAC signature for webhook verification in a Remix](https://community.shopify.com/c/shopify-apps/how-do-i-implement-hmac-signature-for-webhook-verification-in-a/td-p/2539131)
+
+**Idempotency:**
+- [How to Implement Webhook Idempotency | Hookdeck](https://hookdeck.com/webhooks/guides/implement-webhook-idempotency)
+- [Webhooks at Scale: Designing an Idempotent, Replay-Safe System | DEV](https://dev.to/art_light/webhooks-at-scale-designing-an-idempotent-replay-safe-and-observable-webhook-system-7lk)
+- [Handling Payment Webhooks Reliably (Idempotency, Retries, Validation) | Medium](https://medium.com/@sohail_saifii/handling-payment-webhooks-reliably-idempotency-retries-validation-69b762720bf5)
+
+**OpenPanel Server-Side:**
+- [Track | OpenPanel](https://openpanel.dev/docs/api/track)
+- [Common Mistakes in Server-Side Tracking Setup | Medium](https://medium.com/@pritikadb3/common-mistakes-in-server-side-tracking-setup-and-how-to-avoid-them-8ccd43eb6e0d)
+
+**Retry Patterns:**
+- [How to Implement Webhook Retry Logic | Latenode](https://latenode.com/blog/integration-api-management/webhook-setup-configuration/how-to-implement-webhook-retry-logic)
+- [Webhook Retry Best Practices | Svix Resources](https://www.svix.com/resources/webhook-best-practices/retries/)
+- [Handling failed webhooks with Exponential Backoff | Medium](https://medium.com/wellhub-tech-team/handling-failed-webhooks-with-exponential-backoff-72d2e01017d7)
+
+**Environment Security:**
+- [Securing Environment Variables in Remix | Medium](https://vitalii4reva.medium.com/securing-environment-variables-in-remix-a-practical-guide-4a51297d3487)
+- [Are environment variables still safe for secrets in 2026? | Security Boulevard](https://securityboulevard.com/2025/12/are-environment-variables-still-safe-for-secrets-in-2026/)
 
 ---
-*Pitfalls research for: OpenPanel analytics integration as third provider alongside Mixpanel and Vercel Analytics*
-*Researched: 2026-01-25*
+*Webhook & server-side analytics pitfalls for Lemon Squeezy + OpenPanel integration*
+*Researched: 2026-01-27*
+*Confidence: HIGH - Verified with official docs and webhook security best practices*
