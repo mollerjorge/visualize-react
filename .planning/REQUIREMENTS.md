@@ -7,26 +7,26 @@
 
 ### Webhook Endpoint
 
-- [ ] **HOOK-01**: Webhook route at `/api/v1/integrations/lemon-squeezy-webhook/:id`
-- [ ] **HOOK-02**: HMAC-SHA256 signature verification with timing-safe comparison
-- [ ] **HOOK-03**: Return 401 for invalid signatures
+- [x] **HOOK-01**: Webhook route at `/api/v1/integrations/lemon-squeezy-webhook/:id`
+- [x] **HOOK-02**: HMAC-SHA256 signature verification with timing-safe comparison
+- [x] **HOOK-03**: Return 401 for invalid signatures
 
 ### Event Processing
 
-- [ ] **HOOK-04**: Filter for `order_created` events
-- [ ] **HOOK-05**: Filter for `subscription_created` events (test)
-- [ ] **HOOK-06**: Extract user_name, user_email, subtotal_usd from payload
+- [x] **HOOK-04**: Filter for `order_created` events
+- [x] **HOOK-05**: Filter for `subscription_created` events (test)
+- [x] **HOOK-06**: Extract user_name, user_email, subtotal_usd from payload
 
 ### OpenPanel Integration
 
-- [ ] **HOOK-07**: Send `order_created` event to OpenPanel server-side API
-- [ ] **HOOK-08**: Send `subscription_created_test` event to OpenPanel server-side API
-- [ ] **HOOK-09**: Include user_name, user_email, subtotal_usd as event properties
+- [x] **HOOK-07**: Send `order_created` event to OpenPanel server-side API
+- [x] **HOOK-08**: Send `subscription_created_test` event to OpenPanel server-side API
+- [x] **HOOK-09**: Include user_name, user_email, subtotal_usd as event properties
 
 ### Configuration
 
-- [ ] **HOOK-10**: Environment variable for webhook signing secret
-- [ ] **HOOK-11**: Environment variable for OpenPanel client secret
+- [x] **HOOK-10**: Environment variable for webhook signing secret
+- [x] **HOOK-11**: Environment variable for OpenPanel client secret
 
 ## Out of Scope
 
@@ -41,17 +41,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HOOK-01 | Phase 4 | Pending |
-| HOOK-02 | Phase 4 | Pending |
-| HOOK-03 | Phase 4 | Pending |
-| HOOK-04 | Phase 4 | Pending |
-| HOOK-05 | Phase 4 | Pending |
-| HOOK-06 | Phase 4 | Pending |
-| HOOK-07 | Phase 4 | Pending |
-| HOOK-08 | Phase 4 | Pending |
-| HOOK-09 | Phase 4 | Pending |
-| HOOK-10 | Phase 4 | Pending |
-| HOOK-11 | Phase 4 | Pending |
+| HOOK-01 | Phase 4 | Complete |
+| HOOK-02 | Phase 4 | Complete |
+| HOOK-03 | Phase 4 | Complete |
+| HOOK-04 | Phase 4 | Complete |
+| HOOK-05 | Phase 4 | Complete |
+| HOOK-06 | Phase 4 | Complete |
+| HOOK-07 | Phase 4 | Complete |
+| HOOK-08 | Phase 4 | Complete |
+| HOOK-09 | Phase 4 | Complete |
+| HOOK-10 | Phase 4 | Complete |
+| HOOK-11 | Phase 4 | Complete |
 
 **Coverage:** 11/11 requirements (100%)
 
