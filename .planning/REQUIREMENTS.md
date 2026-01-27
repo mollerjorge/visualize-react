@@ -1,55 +1,59 @@
-# Requirements
+# Requirements: v1.1 Lemon Squeezy Webhooks
 
-**Project:** OpenPanel Analytics Integration
-**Generated:** 2026-01-25
+**Defined:** 2026-01-27
+**Core Value:** Track purchases in OpenPanel for conversion measurement
 
 ## v1 Requirements
 
-### OP-01: SDK Integration
-**Description:** OpenPanel SDK integrated and initialized with client ID
-**Category:** Setup
-**Priority:** Must Have
-**Status:** Complete
+### Webhook Endpoint
 
-### OP-02: Pageview Tracking
-**Description:** Pageview tracking on route load
-**Category:** Analytics
-**Priority:** Must Have
-**Status:** Complete
+- [ ] **HOOK-01**: Webhook route at `/api/v1/integrations/lemon-squeezy-webhook/:id`
+- [ ] **HOOK-02**: HMAC-SHA256 signature verification with timing-safe comparison
+- [ ] **HOOK-03**: Return 401 for invalid signatures
 
-### OP-03: Click Event Tracking
-**Description:** Click events tracked (CTAs, navigation, pricing buttons)
-**Category:** Analytics
-**Priority:** Must Have
-**Status:** Complete
+### Event Processing
 
-### OP-04: Form Submission Events
-**Description:** Form submission events (email capture modal)
-**Category:** Analytics
-**Priority:** Must Have
-**Status:** Pending
+- [ ] **HOOK-04**: Filter for `order_created` events
+- [ ] **HOOK-05**: Filter for `subscription_created` events (test)
+- [ ] **HOOK-06**: Extract user_name, user_email, subtotal_usd from payload
 
-### OP-05: Video Play Events
-**Description:** Video play events (Hero video, Bonus video)
-**Category:** Analytics
-**Priority:** Must Have
-**Status:** Pending
+### OpenPanel Integration
 
-### OP-06: Dashboard Visibility
-**Description:** Events visible in OpenPanel dashboard
-**Category:** Verification
-**Priority:** Must Have
-**Status:** Complete
+- [ ] **HOOK-07**: Send `order_created` event to OpenPanel server-side API
+- [ ] **HOOK-08**: Send `subscription_created_test` event to OpenPanel server-side API
+- [ ] **HOOK-09**: Include user_name, user_email, subtotal_usd as event properties
+
+### Configuration
+
+- [ ] **HOOK-10**: Environment variable for webhook signing secret
+- [ ] **HOOK-11**: Environment variable for OpenPanel client secret
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| All Lemon Squeezy event types | Only order_created and subscription_created needed for now |
+| Idempotency/deduplication | Duplicate events acceptable for MVP |
+| Async queue processing | Direct processing sufficient for volume |
+| Database storage of events | Analytics in OpenPanel is the source of truth |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OP-01 | Phase 1 | Complete |
-| OP-02 | Phase 1 | Complete |
-| OP-03 | Phase 2 | Complete |
-| OP-04 | Phase 3 | Pending |
-| OP-05 | Phase 3 | Pending |
-| OP-06 | Phase 1 | Complete |
+| HOOK-01 | TBD | Pending |
+| HOOK-02 | TBD | Pending |
+| HOOK-03 | TBD | Pending |
+| HOOK-04 | TBD | Pending |
+| HOOK-05 | TBD | Pending |
+| HOOK-06 | TBD | Pending |
+| HOOK-07 | TBD | Pending |
+| HOOK-08 | TBD | Pending |
+| HOOK-09 | TBD | Pending |
+| HOOK-10 | TBD | Pending |
+| HOOK-11 | TBD | Pending |
 
-**Coverage:** 6/6 requirements mapped (100%)
+**Coverage:** 11/11 requirements (100% after roadmap)
+
+---
+*Requirements defined: 2026-01-27*
