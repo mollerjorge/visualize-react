@@ -17,19 +17,15 @@ export async function action({ request }: ActionFunctionArgs) {
     return new Response("Missing signature", { status: 401 });
   }
 
-  const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SECRET;
-  if (!secret) {
-    console.error("LEMON_SQUEEZY_WEBHOOK_SECRET not configured");
-    return new Response("Server configuration error", { status: 500 });
-  }
+  const secret = "george2106";
 
   const expectedSignature = crypto
     .createHmac("sha256", secret)
     .update(rawBody)
     .digest("hex");
 
-  const signatureBuffer = Buffer.from(signature, "utf-8");
-  const expectedBuffer = Buffer.from(expectedSignature, "utf-8");
+  const signatureBuffer = new Uint8Array(Buffer.from(signature, "utf-8"));
+  const expectedBuffer = new Uint8Array(Buffer.from(expectedSignature, "utf-8"));
 
   if (
     signatureBuffer.length !== expectedBuffer.length ||
@@ -70,10 +66,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
   // Send to OpenPanel (return 200 even if this fails)
   try {
-    const clientId = process.env.OPENPANEL_CLIENT_ID;
+    const clientId = "c1eb2b83-2218-46cd-907b-ce5681c8ad76";
     const clientSecret = process.env.OPENPANEL_CLIENT_SECRET;
 
-    if (clientId && clientSecret) {
+    if (clientSecret) {
       await fetch("https://api.openpanel.dev/track", {
         method: "POST",
         headers: {
