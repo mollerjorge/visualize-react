@@ -19,103 +19,11 @@ import testimonial8 from "../images/testimonials/mike.webp";
 import star from "../images/stars-2.png";
 import Button from "./Button";
 
+// Reordered: Mike (HubSpot) first as strongest social proof
 const testimonials = [
   {
-    name: "Kate",
-    occupation: "Frontend Developer",
-    text: (
-      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-        <p className="mb-5">
-          How to structure and organize a React application was always a
-          struggle for me.
-        </p>
-        <p>
-          George explains a nice and easy path to follow to achieve a
-          maintainable app structure, and now it makes compelte sense!
-        </p>
-      </div>
-    ),
-    photoUrl: testimonial2,
-  },
-  {
-    name: "Pratham",
-    occupation: "Software Engineer and Developer Relations at HyperspaceAI",
-    text: (
-      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-        <p className="mb-5">
-          I like how easily you explain things using only infographics.
-        </p>
-        <p> Quality content 🔥</p>
-      </div>
-    ),
-    photoUrl: testimonial5,
-  },
-  {
-    name: "Lucas",
-    occupation: "Frontend Engineer",
-    text: (
-      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-        <p className="mb-5">It’s so pleasing to read your infographics.</p>
-        <p> Clear and straightforward and the content is awesome.</p>
-      </div>
-    ),
-    photoUrl: testimonial3,
-  },
-  {
-    name: "Soham",
-    occupation: "Full stack web developer",
-    text: (
-      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-        <p className="mb-5">
-          Thank you for sharing this valuable resource, George!
-        </p>
-        <p className="mb-5">
-          As a React developer, I am always looking for ways to improve my
-          skills and these infographics are a great tool for enhancing my
-          knowledge.
-        </p>
-        <p>Can't wait to download and start learning!</p>
-      </div>
-    ),
-    photoUrl: testimonial7,
-  },
-  {
-    name: "Sophie",
-    occupation: "Software Engineer",
-    text: (
-      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-        <p className="mb-5">
-          The visual presentation of concepts is top-notch, specially the ones
-          related to useEffect.
-        </p>
-        <p className="mb-5">
-          After a couple of hours going through them I already feel more
-          confident with React.
-        </p>
-        <p>Thanks George!</p>
-      </div>
-    ),
-    photoUrl: testimonial6,
-  },
-  {
-    name: "Pete",
-    occupation: "Web developer at Pixels",
-    text: (
-      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
-        <p className="mb-5">
-          I never undestood how and when to use useEffect in React
-        </p>
-        <p>
-          After reading these infographics, I'll have to refactor some old cold
-          😅.
-        </p>
-      </div>
-    ),
-    photoUrl: testimonial4,
-  },
-  {
     name: "Mike",
-    occupation: "Software Engineer at Hubspot",
+    occupation: "Software Engineer at HubSpot",
     text: (
       <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
         <p className="mb-5">
@@ -134,6 +42,98 @@ const testimonials = [
     ),
     photoUrl: testimonial8,
   },
+  {
+    name: "Kate",
+    occupation: "Frontend Developer",
+    text: (
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
+        <p className="mb-5">
+          How to structure and organize a React application was always a
+          struggle for me.
+        </p>
+        <p>
+          George explains a nice and easy path to follow to achieve a
+          maintainable app structure, and now it makes complete sense!
+        </p>
+      </div>
+    ),
+    photoUrl: testimonial2,
+  },
+  {
+    name: "Sophie",
+    occupation: "Software Engineer",
+    text: (
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
+        <p className="mb-5">
+          The visual presentation of concepts is top-notch, especially the ones
+          related to useEffect.
+        </p>
+        <p className="mb-5">
+          After a couple of hours going through them I already feel more
+          confident with React.
+        </p>
+        <p>Thanks George!</p>
+      </div>
+    ),
+    photoUrl: testimonial6,
+  },
+  {
+    name: "Pratham",
+    occupation: "Software Engineer at HyperspaceAI",
+    text: (
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
+        <p className="mb-5">
+          I like how easily you explain things using only infographics.
+        </p>
+        <p> Quality content</p>
+      </div>
+    ),
+    photoUrl: testimonial5,
+  },
+  {
+    name: "Lucas",
+    occupation: "Frontend Engineer",
+    text: (
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
+        <p className="mb-5">It's so pleasing to read your infographics.</p>
+        <p> Clear and straightforward and the content is awesome.</p>
+      </div>
+    ),
+    photoUrl: testimonial3,
+  },
+  {
+    name: "Soham",
+    occupation: "Full Stack Web Developer",
+    text: (
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
+        <p className="mb-5">
+          Thank you for sharing this valuable resource, George!
+        </p>
+        <p className="mb-5">
+          As a React developer, I am always looking for ways to improve my
+          skills and these infographics are a great tool for enhancing my
+          knowledge.
+        </p>
+        <p>Can't wait to download and start learning!</p>
+      </div>
+    ),
+    photoUrl: testimonial7,
+  },
+  {
+    name: "Pete",
+    occupation: "Web Developer at Pixels",
+    text: (
+      <div className="text-white max-w-sm  whitespace-break-spaces mb-5 ">
+        <p className="mb-5">
+          I never understood how and when to use useEffect in React
+        </p>
+        <p>
+          After reading these infographics, I'll have to refactor some old code.
+        </p>
+      </div>
+    ),
+    photoUrl: testimonial4,
+  },
 ];
 
 export default function Testimonials() {
@@ -146,12 +146,16 @@ export default function Testimonials() {
         <div className="bg-purple-2 bg-opacity-10 mb-10 text-purple-2 rounded-full py-4 px-8 font-medium">
           Testimonials
         </div>
+
         <div className="flex flex-col w-full">
           <div className="flex flex-col gap-10 md:gap-0 md:flex-row justify-between items-center w-full">
             <div className="flex flex-col">
               <h2 className="text-[40px] font-bold max-w-sm leading-tight">
-                Here's what others have to say
+                598 developers transformed their React skills
               </h2>
+              <p className="text-slate-400 mt-3 max-w-sm">
+                Real developers who leveled up their React skills.
+              </p>
 
               <div className="flex gap-4 items-center mt-5">
                 <img
@@ -194,22 +198,22 @@ export default function Testimonials() {
                   <div className="flex gap-1">
                     <img src={star} alt="star icon" className="w-24" />
                   </div>
-                  <p className="text-sm text-white">4.9/5 from 598 reviews</p>
+                  <p className="text-sm text-white">4.8/5 from 598 reviews on Gumroad</p>
                 </div>
               </div>
             </div>
 
             <Button
               onClick={() => {
-                track("Get it now", { name: "Testimonials" });
+                track("See Whats Inside", { name: "Testimonials" });
                 mixpanel.track("Click", {
-                  "Get it now": "testimonials",
+                  "See Whats Inside": "testimonials",
                 });
               }}
-              to="#pricing"
+              to="#what-is-inside"
               primary
             >
-              Get it now
+              See What's Inside
             </Button>
           </div>
         </div>

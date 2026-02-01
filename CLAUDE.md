@@ -11,6 +11,8 @@ npm start          # Production server (requires build first)
 npm run typecheck  # TypeScript validation
 ```
 
+Requires Node >=18.
+
 ## Architecture
 
 Remix v2 marketing site for React education product. SSR with client hydration.

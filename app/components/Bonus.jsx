@@ -82,16 +82,14 @@ export default function Bonus() {
       />
       <div className="max-w-7xl mx-auto flex items-center flex-col overflow-hidden">
         <div className="bg-purple-2 bg-opacity-10 mb-10 text-purple-2 rounded-full py-4 px-8 font-medium">
-          Bonus Gift
+          🎁 Bonus Gift
         </div>
 
         <h2 className="text-[40px] max-w-lg text-center leading-tight font-bold">
-          React Interview Questions & Answers ebook
+          Ace your next React interview
         </h2>
-        <p className="text-lg max-w-2xl mb-20 text-center">
-          You'll also get the React interview ebook so that you can ace your
-          next interview by learning how to answer the top most asked React
-          questions.
+        <p className="text-lg max-w-2xl mb-20 text-center text-slate-300">
+          The 47 most common React interview questions, with answers that make interviewers nod. I've been on both sides of the table. This is what gets you hired.
         </p>
 
         <div className="w-fit  bg-[#D9D9D9] max-w-4xl bg-opacity-10 relative p-10 mx-auto rounded-[42px]">

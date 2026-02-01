@@ -7,14 +7,15 @@ import { Header } from "../components/Header";
 import TheProblem from "../components/TheProblem";
 import WhatIsInside from "../components/WhatIsInside";
 import Why from "../components/Why";
-import Testimonials from "../components/Testimonials";
+import WhatPeopleSay from "../components/WhatPeopleSay";
 import Pricing from "../components/Pricing";
 import Bonus from "../components/Bonus";
 import Footer from "../components/Footer";
 import Modal from "../components/Modal";
+import FAQ from "../components/FAQ";
+import FinalCTA from "../components/FinalCTA";
 
 import mixpanel from "mixpanel-browser";
-import Marquee from "~/components/Marquee";
 
 mixpanel.init("fa22af7fecb1e5b8d0c88bd7111c0c63", {
   debug: false,
@@ -24,8 +25,8 @@ mixpanel.init("fa22af7fecb1e5b8d0c88bd7111c0c63", {
 
 export const meta = () => {
   return [
-    { title: "Master React" },
-    { name: "description", content: "Empower Your Frontend Journey with 100+ Insightful Infographics and 70+ video tutorials for Crafting Exceptional Web Experiences!" },
+    { title: "Master React - Finally Understand the WHY Behind React Patterns" },
+    { name: "description", content: "107 visual infographics + 77 video tutorials that explain the WHY behind React patterns. Stop copying Stack Overflow. Start writing code you're proud of." },
   ];
 };
 
@@ -44,18 +45,38 @@ export default function Index() {
       }
     });
   }, []);
+
   return (
     <>
       <Header />
       <main>
+        {/* 1. Hero with social proof */}
         <Hero />
-        {/* <Marquee /> */}
+
+        {/* 2. Problem-Agitate-Solution */}
         <TheProblem />
+
+        {/* 3. What's Inside (videos + infographics) */}
         <WhatIsInside />
+
+        {/* 4. Social Proof */}
+        <WhatPeopleSay />
+
+        {/* 5. About George (credibility) */}
         <Why />
-        <Testimonials />
+
+        {/* 6. Bonus Gift */}
         <Bonus />
+
+        {/* 7. Pricing with guarantee */}
         <Pricing />
+
+        {/* 8. FAQ section */}
+        <FAQ />
+
+        {/* 9. Final CTA */}
+        <FinalCTA />
+
         <Footer />
         <Modal isOpen={isOpen} setIsOpen={setIsModalOpen} />
         <Analytics />

@@ -5,6 +5,7 @@ import { animated, useSpring, config } from "@react-spring/web";
 import mixpanel from "mixpanel-browser";
 
 import Button from "./Button";
+import Marquee from "./Marquee";
 
 import stars from "../images/stars.png";
 import star1 from "../images/star-1.svg";
@@ -115,23 +116,23 @@ export function Hero() {
         <div className="flex flex-col items-center gap-2">
           <img src={stars} className="w-28" alt="stars" />
           <p className="text-white font-semibold text-opacity-60 text-base">
-            These infographics & videos are 🔥
+            "No fluff, straight to the point."
           </p>
         </div>
         <div className="hidden md:flex flex-col items-center gap-2">
           <img src={stars} className="w-28" alt="stars" />
           <p className="text-white max-w-xs text-center font-semibold text-opacity-60 text-base">
-            Finally understood when to use useEffect
+            "Best React content I've seen."
           </p>
         </div>
         <div className="hidden md:flex flex-col items-center gap-2">
           <img src={stars} className="w-28" alt="stars" />
           <p className="text-white font-semibold max-w-[250px] text-center text-opacity-60 text-base">
-            A lot of tips I haven't found elsewhere
+            "Visual format is a game changer."
           </p>
         </div>
       </div>
-      <div className="pb-16 pt-20 text-center lg:pt-24">
+      <div className="py-12 text-center">
         <img
           src={star1}
           className="-z-[1] absolute -top-20 sm:-left-20 sm:top-40"
@@ -146,7 +147,7 @@ export function Hero() {
           style={stylesHeading}
           className="mx-auto max-w-4xl font-display text-5xl font-bold tracking-tight text-white sm:text-7xl"
         >
-          Become{" "}
+          Master production ready{" "}
           <span className="relative whitespace-nowrap text-purple-2">
             <span className="relative">
               <svg
@@ -178,18 +179,16 @@ export function Hero() {
                   </linearGradient>
                 </defs>
               </svg>
-              the best
+              React
             </span>
           </span>{" "}
-          React developer at your company.
+          patterns.
         </h1>
         <p
           style={stylesHeading}
           className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-100 font-medium"
         >
-          107 beautifully designed infographics and 77 dynamic video tutorials
-          will take you from enthusiast to React professional. Start mastering
-          React now!.
+          The visual learning experience for developers who want to truly understand React, no filler content. +107 visual infographics. +77 hands-on short video lessons.
         </p>
         <div
           style={stylesHeading}
@@ -197,13 +196,13 @@ export function Hero() {
         >
           <Button
             onClick={() => {
-              track("Get it now", { name: "Hero" });
+              track("Enroll Now", { name: "Hero" });
               mixpanel.track("Click", {
-                "Get it now": "hero",
+                "Enroll Now": "hero",
               });
               if (typeof window !== 'undefined' && window.op) {
                 window.op('track', 'cta_clicked', {
-                  button_text: 'Get it now',
+                  button_text: 'Enroll Now',
                   location: 'hero',
                   cta_type: 'primary',
                   link_destination: '#pricing'
@@ -213,8 +212,12 @@ export function Hero() {
             to="#pricing"
             primary
           >
-            Get it now
+            Enroll Now
           </Button>
+        </div>
+        <div className="mt-16">
+          <p className="text-sm text-center font-medium text-slate-400 mb-4">Users include engineers from:</p>
+          <Marquee />
         </div>
         <div className="mt-10 lg:mt-20 p-5 ">
           <div className="mx-auto ">

@@ -12,7 +12,6 @@ export default function Marquee() {
 
     return (
         <div className="opacity-40">
-            <h3 className="text-sm text-center mt-10 font-bold text-gray-300">Users include engineers from:</h3>
             <div className="relative flex overflow-x-hidden mt-6 mb-10">
                 {/* Gradient Overlay - Left */}
                 <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-body-1 to-transparent"></div>

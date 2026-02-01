@@ -20,7 +20,6 @@ import video6cover from "../images/videos/video-6-cover.webp";
 
 import magnifyGlass from "../images/magnify-glass.svg";
 import play from "../images/play.svg";
-import infoBackground from "../images/info-background.webp";
 import starsBg from "../images/stars-bg.webp";
 import useOnScreen from "../hooks/useOnScreen";
 import { animated, useTrail, config } from "@react-spring/web";
@@ -201,6 +200,9 @@ export default function WhatIsInside() {
             What's inside?
           </div>
 
+          <div className="bg-yellow-400 text-yellow-900 text-sm font-bold px-4 py-1 rounded-full mb-4">
+            WEEKLY UPDATES
+          </div>
           <h2 className="text-[40px] text-center font-bold">
             The Video Tutorials
           </h2>
@@ -255,11 +257,6 @@ export default function WhatIsInside() {
       </div>
 
       <div className="max-w-7xl mx-auto ">
-        <img
-          src={infoBackground}
-          alt="infographics background"
-          className="absolute left-0 right-0 -z-[1]"
-        />
         <div className="flex pt-5 mx-auto max-w-4xl items-center  flex-col mt-40">
           <h2 className="text-[40px] text-center font-bold">
             The Infographpics
@@ -302,7 +299,7 @@ export default function WhatIsInside() {
             })}
           </ul>
 
-          <p className="text-center text-2xl font-medium mt-20 italic">
+          <p className="text-center text-2xl font-medium mt-20 mb-20 italic">
             ...101 more infographics
           </p>
         </div>
