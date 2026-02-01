@@ -4,9 +4,8 @@ import logo from "../images/logo.webp";
 
 const navigation = {
   main: [
-    { name: "Overview", href: "/#overview" },
-    { name: "What's inside", href: "#what-is-inside" },
-    { name: "Testimonials", href: "#testimonials" },
+    { name: "What's inside?", href: "#what-is-inside" },
+    { name: "What people are saying", href: "#what-people-say" },
     { name: "Pricing", href: "#pricing" },
   ],
   social: [
@@ -48,7 +47,7 @@ export default function Footer() {
           ))}
         </div>
         <p className="mt-10 text-center text-sm leading-5 text-gray-400">
-          &copy; 2025 George Moller, Inc. All rights reserved.
+          &copy; 2026 George Moller, Inc. All rights reserved.
         </p>
       </div>
     </footer>

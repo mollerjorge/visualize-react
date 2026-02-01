@@ -72,7 +72,7 @@ const Pricings = [
     fullPrice: "$149",
     discount: null,
     description: "The fast track to senior-level React. Video walkthroughs + visual references + weekly updates.",
-    href: "https://georgemoller.lemonsqueezy.com/checkout/buy/992390e3-36f8-4ee7-8200-2ba781004206",
+    href: "https://georgemoller.lemonsqueezy.com/checkout/buy/601f46d6-3f75-4ab8-8ae1-70a5f1006c50",
     features: [
       { name: "+77 Video Lessons", included: true },
       { name: "+107 Visual Infographics", included: true },
@@ -81,7 +81,7 @@ const Pricings = [
       { name: "Walkthroughs of infographics", included: false },
       { name: "1hr React Consultation", included: false },
     ],
-    cta: "Enroll Now",
+    cta: "Get it now",
     highlighted: true,
     badge: "MOST POPULAR",
   },
@@ -92,7 +92,7 @@ const Pricings = [
     fullPrice: "$249",
     discount: null,
     description: "Everything in Bundle + Walkthroughs of infographics + 1hr consultation.",
-    href: "https://georgemoller.lemonsqueezy.com/checkout/buy/601f46d6-3f75-4ab8-8ae1-70a5f1006c50",
+    href: "https://georgemoller.lemonsqueezy.com/checkout/buy/992390e3-36f8-4ee7-8200-2ba781004206",
     features: [
       { name: "+77 Video Lessons", included: true },
       { name: "+107 Visual Infographics", included: true },

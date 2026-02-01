@@ -196,13 +196,13 @@ export function Hero() {
         >
           <Button
             onClick={() => {
-              track("Enroll Now", { name: "Hero" });
+              track("Get it now", { name: "Hero" });
               mixpanel.track("Click", {
-                "Enroll Now": "hero",
+                "Get it now": "hero",
               });
               if (typeof window !== 'undefined' && window.op) {
                 window.op('track', 'cta_clicked', {
-                  button_text: 'Enroll Now',
+                  button_text: 'Get it now',
                   location: 'hero',
                   cta_type: 'primary',
                   link_destination: '#pricing'
@@ -212,7 +212,7 @@ export function Hero() {
             to="#pricing"
             primary
           >
-            Enroll Now
+            Get it now
           </Button>
         </div>
         <div className="mt-16">

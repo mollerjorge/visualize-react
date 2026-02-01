@@ -24,10 +24,6 @@ const faqs = [
   {
     question: "Do I get lifetime access?",
     answer: "Yes. Pay once, access forever. Core and Premium tiers also include lifetime updates with new lessons added weekly."
-  },
-  {
-    question: "What's included in the async code review? (Premium)",
-    answer: "Send me a component, hook, or architectural question from your real codebase. I'll record a video review with specific feedback and suggestions. One review included with Premium tier."
   }
 ];
 
